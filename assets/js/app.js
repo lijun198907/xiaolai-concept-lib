@@ -233,16 +233,52 @@
   }
 
   function setupNav() {
-    const btn = document.querySelector('[data-nav-toggle]');
     const links = document.querySelector('[data-nav-links]');
-    if (!btn || !links) return;
-    btn.addEventListener('click', () => links.classList.toggle('open'));
+    if (!links) return;
     const path = location.pathname.split('/').pop() || 'index.html';
     links.querySelectorAll('a').forEach(a => {
       const href = a.getAttribute('href');
       if (href === path || (path === '' && href === 'index.html')) {
         a.classList.add('active');
+        a.setAttribute('aria-current', 'page');
       }
+    });
+  }
+
+  function setupTheme() {
+    const key = 'concept-lib:theme';
+    const group = document.querySelector('[data-theme-switch]');
+    if (!group) return;
+    const buttons = Array.from(group.querySelectorAll('[data-theme-choice]'));
+    const allowed = ['day', 'night', 'paper'];
+
+    function apply(theme, persist) {
+      if (!allowed.includes(theme)) theme = 'day';
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.style.colorScheme = theme === 'night' ? 'dark' : 'light';
+      buttons.forEach(btn => {
+        const on = btn.getAttribute('data-theme-choice') === theme;
+        btn.setAttribute('aria-checked', on ? 'true' : 'false');
+        btn.tabIndex = on ? 0 : -1;
+      });
+      if (persist) {
+        try { localStorage.setItem(key, theme); } catch (e) { /* private mode */ }
+      }
+    }
+
+    apply(document.documentElement.getAttribute('data-theme') || 'day', false);
+
+    buttons.forEach((btn, index) => {
+      btn.addEventListener('click', () => apply(btn.getAttribute('data-theme-choice'), true));
+      btn.addEventListener('keydown', (e) => {
+        const forward = e.key === 'ArrowRight' || e.key === 'ArrowDown';
+        const back = e.key === 'ArrowLeft' || e.key === 'ArrowUp';
+        if (!forward && !back) return;
+        e.preventDefault();
+        const next = buttons[(index + (forward ? 1 : -1) + buttons.length) % buttons.length];
+        next.focus();
+        apply(next.getAttribute('data-theme-choice'), true);
+      });
     });
   }
 
@@ -971,6 +1007,7 @@
   }
 
   async function boot() {
+    setupTheme();
     setupNav();
     const page = document.body.dataset.page;
     let books = [];

@@ -5,39 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>概念书库</title>
   <meta name="description" content="用概念与方法论读李笑来等书，并汇入开讲同学解读。">
-  <link rel="stylesheet" href="assets/css/style.css?v=20261115a">
+  <script>
+  (function () {
+    var key = 'concept-lib:theme';
+    var theme = 'day';
+    try {
+      var saved = localStorage.getItem(key);
+      if (saved === 'day' || saved === 'night' || saved === 'paper') theme = saved;
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'night';
+    } catch (e) {}
+    var root = document.documentElement;
+    root.setAttribute('data-theme', theme);
+    root.style.colorScheme = theme === 'night' ? 'dark' : 'light';
+  })();
+  </script>
+  <link rel="stylesheet" href="assets/css/style.css?v=20261115e">
 </head>
 <body data-page="home">
+  <a class="skip-link" href="#content">跳到内容</a>
   <header class="site-header">
     <div class="wrap nav">
       <a class="brand" href="index.html">概念<span>书库</span></a>
-      <button class="nav-toggle" type="button" data-nav-toggle aria-label="菜单">菜单</button>
-      <ul class="nav-links" data-nav-links>
-        <li><a href="index.html">搜索</a></li>
-        <li><a href="books.html">所有书籍</a></li>
-        <li><a href="about.html">关于</a></li>
-      </ul>
+      <nav class="site-nav" aria-label="主导航">
+        <ul class="nav-links" data-nav-links>
+          <li><a href="index.html" class="active" aria-current="page">搜索</a></li>
+          <li><a href="books.html">所有书籍</a></li>
+          <li><a href="about.html">关于</a></li>
+        </ul>
+      </nav>
+      <div class="theme-switch" role="radiogroup" aria-label="配色" data-theme-switch>
+        <button type="button" role="radio" data-theme-choice="day" aria-checked="false">白天</button>
+        <button type="button" role="radio" data-theme-choice="night" aria-checked="false">夜间</button>
+        <button type="button" role="radio" data-theme-choice="paper" aria-label="护眼暖纸配色" aria-checked="false">护眼</button>
+      </div>
     </div>
   </header>
 
-  <main>
+  <main id="content">
     <section class="hero wrap">
       <h1>概念书库</h1>
-      <p class="lead">搜概念、方法论，或书里的原话。结果可打开对应卡片，也可跳到李笑来原站看上下文。版权书只做书目与摘录，全文请回原站。</p>
       <div class="search-box" role="search">
-        <input type="search" data-search-input placeholder="搜索概念、方法论或原文，例如：财富、时间、定投" aria-label="搜索">
+        <div class="search-field">
+          <span class="search-hint" id="search-hint"><span class="hint-lead">搜索概念、方法论或原文，</span><span class="hint-examples">例如：财富、时间、定投</span></span>
+          <input type="search" data-search-input placeholder=" " aria-labelledby="search-hint">
+        </div>
         <button type="button" data-search-btn>搜索</button>
       </div>
-
-      <div class="hint-card" data-hint>
-        <h2>你会搜到什么？</h2>
-        <ul>
-          <li>25 本书里的关键概念、方法论与模型，点进去会打开对应卡片</li>
-          <li>开源书中的原文短摘录，可点「看上下文」跳到李笑来原站</li>
-          <li>书名（进入该书的概念页）；本站不收录书籍全文</li>
-        </ul>
-      </div>
-      <p data-error style="color:#b91c1c;margin-top:1rem"></p>
+      <p class="usage-note">在 25 本书里搜概念、方法论，或开源书里的原话。<br class="note-break">点<span class="keep">结果</span>可打开对应卡片，也可跳到李笑来原站<span class="keep">看上下文</span>。<br class="note-break"><span class="keep">版权书</span>只做书目与摘录，全文请回原站。</p>
+      <p class="error-note" data-error></p>
     </section>
 
     <section class="results wrap">
@@ -49,6 +64,6 @@
   <footer class="site-footer">
     <div class="wrap">概念书库 · 用概念方法论读书 · 开讲同学共建</div>
   </footer>
-  <script src="assets/js/app.js?v=20261115a"></script>
+  <script src="assets/js/app.js?v=20261115b"></script>
 </body>
 </html>

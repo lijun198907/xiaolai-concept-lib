@@ -4,29 +4,50 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>书详情 · 概念书库</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=20261115a">
+  <script>
+  (function () {
+    var key = 'concept-lib:theme';
+    var theme = 'day';
+    try {
+      var saved = localStorage.getItem(key);
+      if (saved === 'day' || saved === 'night' || saved === 'paper') theme = saved;
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'night';
+    } catch (e) {}
+    var root = document.documentElement;
+    root.setAttribute('data-theme', theme);
+    root.style.colorScheme = theme === 'night' ? 'dark' : 'light';
+  })();
+  </script>
+  <link rel="stylesheet" href="assets/css/style.css?v=20261115e">
 </head>
 <body data-page="book">
+  <a class="skip-link" href="#content">跳到内容</a>
   <header class="site-header">
     <div class="wrap nav">
       <a class="brand" href="index.html">概念<span>书库</span></a>
-      <button class="nav-toggle" type="button" data-nav-toggle aria-label="菜单">菜单</button>
-      <ul class="nav-links" data-nav-links>
-        <li><a href="index.html">搜索</a></li>
-        <li><a href="books.html">所有书籍</a></li>
-        <li><a href="about.html">关于</a></li>
-      </ul>
+      <nav class="site-nav" aria-label="主导航">
+        <ul class="nav-links" data-nav-links>
+          <li><a href="index.html">搜索</a></li>
+          <li><a href="books.html">所有书籍</a></li>
+          <li><a href="about.html">关于</a></li>
+        </ul>
+      </nav>
+      <div class="theme-switch" role="radiogroup" aria-label="配色" data-theme-switch>
+        <button type="button" role="radio" data-theme-choice="day" aria-checked="false">白天</button>
+        <button type="button" role="radio" data-theme-choice="night" aria-checked="false">夜间</button>
+        <button type="button" role="radio" data-theme-choice="paper" aria-label="护眼暖纸配色" aria-checked="false">护眼</button>
+      </div>
     </div>
   </header>
 
-  <main class="wrap detail">
-    <p data-error style="color:#b91c1c"></p>
+  <main id="content" class="wrap detail">
+    <p class="error-note" data-error></p>
     <div data-book-detail></div>
   </main>
 
   <footer class="site-footer">
     <div class="wrap">概念书库 · 用概念方法论读书 · 开讲同学共建</div>
   </footer>
-  <script src="assets/js/app.js?v=20261115a"></script>
+  <script src="assets/js/app.js?v=20261115b"></script>
 </body>
 </html>
