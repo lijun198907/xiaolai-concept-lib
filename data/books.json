@@ -1,0 +1,1956 @@
+[
+  {
+    "id": "little-book-of-ai",
+    "title": "人工智能小白书",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "面向普通人的人工智能入门读本，用白话建立基本图景。",
+    "officialUrl": "https://lixiaolai.com/books/little-book-of-ai",
+    "sourceUrl": "https://lixiaolai.com/books/little-book-of-ai",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "工具方法论六问",
+        "blurb": "用工具时依次想清：边界外不能干什么、边界内能干什么、前提风险、如何用、如何用更好、如何用最好。安全第一是其中首要观念。",
+        "sourceUrl": "https://lixiaolai.com/books/little-book-of-ai/zh-02#_2-3-3-继续补充工具方法论"
+      },
+      {
+        "id": "C02",
+        "name": "智能的核心：判断",
+        "blurb": "智能的锋利定义：核心是判断力。若教育不能提高判断力，就是垃圾甚至毒药；生活处处需要判断，无判断不智能。",
+        "sourceUrl": "https://lixiaolai.com/books/little-book-of-ai/zh-03#_3-6-智能要从乔治·布林说起"
+      },
+      {
+        "id": "C03",
+        "name": "进化的核心：递归",
+        "blurb": "进化的核心是递归；作者用大白话拆解并与判断力并列为锋利认知。",
+        "sourceUrl": "https://lixiaolai.com/books/little-book-of-ai/zh-04#_4-4-进化的核心"
+      },
+      {
+        "id": "C04",
+        "name": "方法的核心：流程",
+        "blurb": "智能工具崛起后，方法的核心落在可复用流程；与工具方法论对照推进。",
+        "sourceUrl": "https://lixiaolai.com/books/little-book-of-ai/zh-05#_5-8-继续完善工具方法论"
+      },
+      {
+        "id": "C05",
+        "name": "全面（思考质量）",
+        "blurb": "全面＝尽可能多罗列情况／不漏可能性；既是程序思维重点，也是衡量思考质量的最重要标准；多数人受能量局限做不到。",
+        "sourceUrl": "https://lixiaolai.com/books/little-book-of-ai/zh-06#_6-1-人类的思考局限"
+      },
+      {
+        "id": "C06",
+        "name": "人工智能排斥懒人",
+        "blurb": "反驳「懒人推动发明」的哗众取宠说；真正用好 AI 需要主动投入，懒人会被排斥在红利外。",
+        "sourceUrl": "https://lixiaolai.com/books/little-book-of-ai/zh-07#_7-1-懒人推动世界"
+      },
+      {
+        "id": "C07",
+        "name": "英语是终端技能（对 AI）",
+        "blurb": "英语不是中间件技能而是终端技能；最佳场景很可能是与人工智能好好说话——AI 母语只能是英语。",
+        "sourceUrl": "https://lixiaolai.com/books/little-book-of-ai/zh-10#_10-5-写给家长的话"
+      },
+      {
+        "id": "C08",
+        "name": "财富来自生产／必须成为生产者",
+        "blurb": "财富唯一正当来源是生产；必须成为主动生产者——生产标的含数据、作品、服务等，不限于体力实物。",
+        "sourceUrl": "https://lixiaolai.com/books/little-book-of-ai/zh-09#_9-1-必须成为生产者"
+      },
+      {
+        "id": "C09",
+        "name": "最大限制在自己",
+        "blurb": "工具再贵再好，真正上限在使用者认真程度与自我要求；认真对待工具是习惯而非矫情。",
+        "sourceUrl": "https://lixiaolai.com/books/little-book-of-ai/zh-12"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "安全永远第一",
+        "blurb": "使用任何工具都遵循 Safety First；统计显示「显而易见的错误」仍造成大量伤害——安全是工具方法论不可或缺的首要原则。",
+        "sourceUrl": "https://lixiaolai.com/books/little-book-of-ai/zh-02#_2-1-总被忽视的原则-安全第一"
+      },
+      {
+        "id": "M02",
+        "name": "把 ChatGPT 当 AMA 机器人练提问",
+        "blurb": "从 Ask Me Anything 类比理解 ChatGPT：精力／礼仪不再限制嘉宾，用大量真实提问练与 AI 协作。",
+        "sourceUrl": "https://lixiaolai.com/books/little-book-of-ai/zh-01#_1-1-chatgpt-终极-ama-机器人"
+      },
+      {
+        "id": "M03",
+        "name": "必须用好计算机",
+        "blurb": "计算机是最便宜普及的智能工具与基础设施；认真掌握真实用法，而不是把设备当杯托／压泡面。",
+        "sourceUrl": "https://lixiaolai.com/books/little-book-of-ai/zh-11#_11-7-最好的计算机老师"
+      },
+      {
+        "id": "M04",
+        "name": "人人都能用英语（练）",
+        "blurb": "AI 时代人人可成为多语使用者——前提是真的肯练；别因翻译厉害就放弃练。",
+        "sourceUrl": "https://lixiaolai.com/books/little-book-of-ai/zh-10#_10-1-人人都有多语潜力"
+      }
+    ],
+    "published": "2026-04-30",
+    "publishedLabel": "April 30, 2026",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2; rejected 后记/关于插图/前言/ChatGPT之外(短导航)",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "1000-hours",
+    "title": "1000 小时",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "以一千小时为尺度讨论注意力、刻意投入与能力积累；本页概念／方法来自 v0.3 Spike 正式抽取。",
+    "officialUrl": "https://lixiaolai.com/books/1000-hours",
+    "sourceUrl": "https://lixiaolai.com/books/1000-hours",
+    "concepts": [
+      {
+        "name": "用注意力填满1000小时",
+        "blurb": "作者主张：用注意力填满约1000小时是「练成」所需技能的充分必要条件；「练成」指精通而非及格。英语是健脑示范标的，方式可迁移。…",
+        "id": "C01",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/intro"
+      },
+      {
+        "name": "知道与做到之间的距离",
+        "blurb": "知晓、学到与做到之间隔着时间上的距离；语音塑造是典型「知道学到并不一定做到」，做到靠短时间内足量重复在脑内新建连接。该时间须注满自己的注意力才有效。",
+        "id": "C02",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/intro"
+      },
+      {
+        "name": "短时间内足量重复（努力的定义）",
+        "blurb": "作者将「努力」定义为：专项练习高密度、足次数——短时间内足量重复。稀疏拉长会被用进废退抵消；主导功能是对努力/练习效果机制的定义与解释，行动含义通过关联方法论落实，不另建同义方法卡。",
+        "id": "C03",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/in-the-brain-07-repitition"
+      },
+      {
+        "name": "注意力有限、排他且不可再生",
+        "blurb": "注意力攒不住也省不下；高度集中耗能大；注意广度过短则难以新建连接。作者举例：集中时长不超过约25分钟则聊胜于无（否则新建连接不可能），一天可能需要多个这样的集中段。保护注意力是核心生存技能。…",
+        "id": "C04",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/in-the-brain-12-unreproducible"
+      },
+      {
+        "name": "注意不到（对你来说）就不存在",
+        "blurb": "在注意力管理与元认知意义上：你注意不到的东西对你来说就不存在；反过来，不知道就注意不到（例如注意不到自己在调用近似网络）。…",
+        "id": "C05",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/in-the-brain-09-unnoticed"
+      },
+      {
+        "name": "近似连接／近似网络及其竞争",
+        "blurb": "大脑为节能会调用近似连接/近似网络去「近似完成」任务；旧近似网络竞争力过大是学习变难的主因之一；关键在于能否甄别自己是否在调用近似网络。",
+        "id": "C06",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/in-the-brain-08-compitition"
+      },
+      {
+        "name": "熟练卸载负担与精通无负担",
+        "blurb": "熟悉/熟练后流程可下意识完成，等于给近单线程的注意力卸载负担；熟练不是尽头，精通才是彻底无负担。程度差异须保留。",
+        "id": "C07",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/in-the-brain-10-unloading"
+      },
+      {
+        "name": "用进废退",
+        "blurb": "大脑自动严格执行用进废退：常用则内化强化，不用则搁置；与节能倾向绑定。",
+        "id": "C08",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/in-the-brain-06-use-or-lose"
+      },
+      {
+        "name": "按需学习",
+        "blurb": "因节能，大脑倾向只学它认为必需的；技能真正练好前，大脑可能不信其用处，从而阻止学习。",
+        "id": "C09",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/in-the-brain-06-use-or-lose"
+      },
+      {
+        "name": "循环利用（超额学习的奖励）",
+        "blurb": "大脑倾向回收已建连接/局域网留作它用；优先用更强连接；结果是对超额学习的奖励，学得越多越快越好。",
+        "id": "C10",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/in-the-brain-06-use-or-lose"
+      },
+      {
+        "name": "一切都是连接",
+        "blurb": "一切动作与思考对大脑都是神经元连接与基础/高级功能局域网协作；感觉「学了用不上」常是从未真正学会。",
+        "id": "C11",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/in-the-brain-02-links"
+      },
+      {
+        "name": "对大脑而言一切都是体育课",
+        "blurb": "无论学什么，对大脑都是创建/强化连接、构建局域网，肉眼可见对应部位体积密度变化；学什么本质上同构。",
+        "id": "C12",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/in-the-brain-03-sports"
+      },
+      {
+        "name": "自然语言使用是最佳健脑方式",
+        "blurb": "掌握并不断提高自然语言能力被作者称为最佳健脑方式（不必加「之一」）；自然语言是最复杂系统知识，其它知识技能建其上。英语为示范训练标的。",
+        "id": "C13",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/intro"
+      },
+      {
+        "name": "判断力与注意力投向",
+        "blurb": "健脑训练同时是注意力与判断力训练；能力取决于驾驭注意力的能力（能集中多久、知道集中到哪里）；知道投向哪里靠判断力；判断力是智慧的基础与结果，智能时代个体竞争力关键。",
+        "id": "C14",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/intro"
+      },
+      {
+        "name": "效能阈值决定表现",
+        "blurb": "大脑为保生存设定效能/安全阈值；表现不仅看体能/技巧，更看动机（风险回报评估后是否接纳抬高阈值）。自我驱动的本质是不断上调该阈值。",
+        "id": "C15",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/self-training-06-motives"
+      },
+      {
+        "name": "一切都是语文课",
+        "blurb": "对大脑而言无论学什么本质都是语文课：自然语言与人工语言的理解、总结、调用与沟通；学校课程实质多用自然语言讲授人工语言记录的知识。",
+        "id": "C16",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/in-the-brain-04-literature"
+      },
+      {
+        "name": "第一语言限制第二语言（及反哺）",
+        "blurb": "第二语言水平必然受第一语言限制；「无话可说」常暴露母语与观察/思考不足。同时，把第二语言练成第一语言的过程会反哺原第一语言。",
+        "id": "C17",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/intro"
+      }
+    ],
+    "methods": [
+      {
+        "name": "启动三规：自说／每天≥3小时／交作业",
+        "blurb": "本书英语健脑训练的启动纪律：用AI把「自己想说的话」做成英音材料并跟读背诵；每天至少三小时大声练；作业自存档。关键是只靠自己。每天≥3小时及「做不到就算了/还不如不做」是本场训练的专项纪律主张，不是一切技能或一切学习者的普遍科学义务。",
+        "id": "M01",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/training-tasks-kick-off#_1-1-任务要点"
+      },
+      {
+        "name": "语音跟读流程（§2.1–2.7）",
+        "blurb": "作者在 training-tasks/procedures.md §2.1–2.7 给出的英语语音跟读专项操作流程（搞清读音→慢速细听／音素级分析→分段跟读→完整跟读并录音→背诵与定期复习→放松仍盯韵律与音素→每日复盘）。…",
+        "id": "M02",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/training-tasks-procedures#_2-4-完整跟读"
+      },
+      {
+        "name": "刻意练习（作者改写）：系统调用注意力建新网",
+        "blurb": "作者明确改写「刻意练习」：关键不是仅提高难度/破舒适区的通行表述（作者先转述科学家说法），而是有组织有计划有系统地调用注意力，致力于新建连接新建网络，而非调用近似网络；可用检查列表启动元认知。此为作者改写口径，非既有学术定义复述。",
+        "id": "M03",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/in-the-brain-09-unnoticed"
+      },
+      {
+        "name": "只能自学（关键在主动，非孤立）",
+        "blurb": "练习多数只能私人完成（个性化难点、聚光灯效应）；自学关键是主动——主动求教、建立评判标准、寻找更好环境、帮助他人——而非完全孤立。目标/动力/计划/纠错/验收最终靠自己承担。",
+        "id": "M04",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/self-training-02-last-resort"
+      },
+      {
+        "name": "生学硬练",
+        "blurb": "不断试错直至可能，不断重复直至精通；0→1突破靠不停换方式尝试；方法论在「可能」之后更好用；技巧是变着花样重复。",
+        "id": "M05",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/self-training-03-trials-and-errors"
+      },
+      {
+        "name": "要点烂熟与检查列表式自我纠正",
+        "blurb": "自我纠正：先把教材/要点反复读到烂熟（哪怕暂时做不到），使「知道了就能注意到」偏差；练习时按要点/检查列表集中注意力发现做不到/做不好处并纠正。首月语音教材只字不差反复读为本书英语任务示例强度。",
+        "id": "M06",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/self-training-05-correction"
+      },
+      {
+        "name": "反复阅读教材（走出迷宫）",
+        "blurb": "在存在大量前置引用的复杂系统知识（作者举例：语法、编程、语音教程）中，自学的基础习惯之一是反复阅读教材——看不懂也要读完并多遍；难度常因没读完造成，早期难点可随通读与重复消解。这是作者给出的实践秘诀，不是「所有复杂知识的普遍定律」表述。",
+        "id": "M07",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/self-training-04-maze"
+      },
+      {
+        "name": "验收标准、记录与自我监督",
+        "blurb": "自我监督章（08-supervising.md）明确讨论：（1）任务须有验收与可分好坏的验收标准；（2）完成后按验收标准做总验收；最好的自我监督是不断抬高要求、调整验收标准、提高判断力；…",
+        "id": "M08",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/self-training-08-supervising"
+      },
+      {
+        "name": "收集值得思考的问题",
+        "blurb": "专门维护问题本：持续收集整理值得思考的问题，使其如吸铁石吸引相关输入、如筛子过滤噪声，成为驾驭注意力的工具。",
+        "id": "M09",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/training-tasks-surprise"
+      },
+      {
+        "name": "纵向比较；少做无谓的横向比较",
+        "blurb": "真正有意义的比较是「现在的自己 vs 过去的自己」（纵向）；习以为常的横向比较忽视积累过程，失败易养固守型人格。作者还写：越发地不在意也没时间进行无谓的横向比较——反对的是无谓横向比较，不是断言一切横向比较都无意义。",
+        "id": "M10",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/in-the-brain-11-burden"
+      },
+      {
+        "name": "兴趣焦点放在「进步」上",
+        "blurb": "保持计划动力：把兴趣从某个具象项目挪到抽象的「进步／改良」上，以避免半途而废并贯彻练习计划。",
+        "id": "M11",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/self-training-09-planning"
+      },
+      {
+        "name": "不断上调效能阈值（自我驱动）",
+        "blurb": "自我驱动的本质是不断上调大脑为自己设定的效能阈值（原文：06-motives.md）。…",
+        "id": "M12",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/self-training-06-motives"
+      },
+      {
+        "name": "自我鼓励手段（恐惧／假账／鼓励他人）",
+        "blurb": "07-encouraging 中高风险自我鼓励手段：调用恐惧、算「假账」、通过鼓励他人让自己大脑先相信。正面「赋予意义」归属见 M12（D.6=α），本卡不再作为赋予意义的主步骤。…",
+        "id": "M13",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/self-training-07-encouraging"
+      }
+    ],
+    "published": "2024-02-10",
+    "publishedLabel": "February 10, 2024",
+    "models": [
+      {
+        "name": "从不可能到精通的进展链",
+        "blurb": "作者在「生学硬练」章用文字与流程图明确给出进展链：不可能→可能→笨拙→熟练→停滞→精通；…",
+        "id": "MOD01",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/self-training-03-trials-and-errors"
+      },
+      {
+        "name": "自我训练反馈循环（待核验）",
+        "blurb": "整理者根据自我训练手册章节归纳的循环候选：主动练习→观察表现→发现问题→自我纠正→调整计划/动机→继续练习。作者未以单一「循环」名义定义，章节为并列手册主题。",
+        "id": "MOD02",
+        "sourceUrl": "https://lixiaolai.com/books/1000-hours/self-training-05-correction"
+      }
+    ],
+    "conceptSource": {
+      "kind": "spike-v0.3-formal-cards",
+      "path": "docs/v0.3/spike-1000-hours-v0.3-cards.json",
+      "note": "来自 Spike 正式卡；多数 pending_review，非 Accepted；不含 demoted/rejected"
+    }
+  },
+  {
+    "id": "help-to-be-helped",
+    "title": "如何自助——助人即助己",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "讨论自助与助人的关系：帮到别人，往往也在帮自己。",
+    "officialUrl": "https://lixiaolai.com/books/help-to-be-helped",
+    "sourceUrl": "https://lixiaolai.com/books/help-to-be-helped",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "恐惧与慌张可分离",
+        "blurb": "恐惧是信号，慌张是失控反应；二者可被分离——先稳住慌张，再处理恐惧指向的事实。",
+        "sourceUrl": "https://lixiaolai.com/books/help-to-be-helped/4-恐惧和慌张其实可被分离"
+      },
+      {
+        "id": "C02",
+        "name": "潜意识基础工作原理",
+        "blurb": "潜意识持续做自动化加工；理解其原理才能解释恐慌为何「不讲理」以及如何干预。",
+        "sourceUrl": "https://lixiaolai.com/books/help-to-be-helped/5-潜意识的基础工作原理"
+      },
+      {
+        "id": "C03",
+        "name": "恐慌的根源",
+        "blurb": "恐慌常来自不确定与失控感，而非单纯外部事件强度。",
+        "sourceUrl": "https://lixiaolai.com/books/help-to-be-helped/6-恐慌的根源是什么"
+      },
+      {
+        "id": "C04",
+        "name": "以理服己",
+        "blurb": "关键不是说服别人，而是先用道理说服自己，避免被情绪绑架决策。",
+        "sourceUrl": "https://lixiaolai.com/books/help-to-be-helped/9-以理服己才是正确的选择"
+      },
+      {
+        "id": "C05",
+        "name": "助人即助己",
+        "blurb": "在灾难／危机中帮助他人，同时强化自己的秩序感与免疫于恐慌的能力。",
+        "sourceUrl": "https://lixiaolai.com/books/help-to-be-helped/17-助人即助己"
+      },
+      {
+        "id": "C06",
+        "name": "角色决定选择",
+        "blurb": "你的角色（家长／医护／普通人等）决定该做什么、不该做什么，避免越位群辩。",
+        "sourceUrl": "https://lixiaolai.com/books/help-to-be-helped/2-你的角色决定了你的选择"
+      },
+      {
+        "id": "C07",
+        "name": "危险不应改变价值观",
+        "blurb": "外部危险改变行为策略，但不该推翻你长期价值观与做人底线。",
+        "sourceUrl": "https://lixiaolai.com/books/help-to-be-helped/20-危险不应改变你的价值观"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "恐慌即时应对",
+        "blurb": "恐慌升起时的即时步骤：分离慌张、回到可验证事实、避免群辩加油。",
+        "sourceUrl": "https://lixiaolai.com/books/help-to-be-helped/8-恐慌的即时应对策略"
+      },
+      {
+        "id": "M02",
+        "name": "灾难面前不参与群辩",
+        "blurb": "灾难信息场少参与情绪化群辩；把精力留给可验证行动。",
+        "sourceUrl": "https://lixiaolai.com/books/help-to-be-helped/10-灾难面前不要参与群辩"
+      },
+      {
+        "id": "M03",
+        "name": "和颜悦色说话练习",
+        "blurb": "压力下练习平稳、清楚的表达，降低传染性恐慌。",
+        "sourceUrl": "https://lixiaolai.com/books/help-to-be-helped/15-练习和颜悦色的说话方式"
+      },
+      {
+        "id": "M04",
+        "name": "嬉皮笑脸地生活",
+        "blurb": "用轻松姿态对抗过度严肃的恐慌氛围，保护长期心理弹性。",
+        "sourceUrl": "https://lixiaolai.com/books/help-to-be-helped/19-学会嬉皮笑脸地生活"
+      }
+    ],
+    "published": "2020-01-31",
+    "publishedLabel": "January 31, 2020",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2; rejected COVID topical chrome as concepts (病毒事实/隔离步骤可当历史操作非概念库主卡)",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "regular-investing-changes-fate",
+    "title": "定投改变命运",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "系统阐述定投理念：用长期、固定节奏改变普通人的财富轨迹。",
+    "officialUrl": "https://lixiaolai.com/books/regular-investing-changes-fate",
+    "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "定投策略",
+        "blurb": "针对某个投资标的，在很长时间内定期投入一定金额。它是「谨慎选择长期持有」的进一步改良：入场时机再差也可能提前盈利，因为策略契合「中期熊市长、牛市短」的现实。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第一部分-定投策略#_1-1-定投策略及其效果展示"
+      },
+      {
+        "id": "C02",
+        "name": "长期（两个大周期以上）",
+        "blurb": "作者把「长期」清晰定义为两个大周期以上，即至少穿越两次牛熊。没有这个可用定义，「长期持有」无法真正使用。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第一部分-定投策略#_1-2-所谓长期它究竟是多久"
+      },
+      {
+        "id": "C03",
+        "name": "大周期",
+        "blurb": "一个大周期由下降的B阶段与上涨的A阶段构成；历史最高点常作B阶段起点，且只能滞后判断。趋势判断至少要看两个大周期才有意义，且最多做到「更可能」。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第一部分-定投策略#_1-2-所谓长期它究竟是多久"
+      },
+      {
+        "id": "C04",
+        "name": "利润来自漫长熊市",
+        "blurb": "定投未来利润本质上几乎全部来自所经历的漫长熊市；定投者在熊市积聚能量，而多数人想在短暂牛市里快速赚钱。作者同时指出「降低均价」只是部分正确，也可能抬高均价。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第一部分-定投策略#_1-1-定投策略及其效果展示"
+      },
+      {
+        "id": "C05",
+        "name": "场外赚钱能力",
+        "blurb": "定投要长期持续投入，践行者必须有覆盖生活与意外、还能剩余可投资金的场外赚钱能力。作者称自己能长期持有的核心原因不是信仰，而是升级过的个人商业模式带来的零成本、无期限资金。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第三部分-定投策略执行过程#_3-4-场外持续赚钱能力"
+      },
+      {
+        "id": "C06",
+        "name": "α（创造α）",
+        "blurb": "α指因跑赢市场而获得的收益。对定投者而言，创造α主要发生在开始前的谨慎选标：一旦开始，动作只有买，α正负往往要很久之后才知道。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第二部分-定投标的的选择#_2-5-在趋势之中符合趋势"
+      },
+      {
+        "id": "C07",
+        "name": "γ（因犯错未赚到的部分）",
+        "blurb": "γ总是为正：人都会犯错。频繁交易、错过好日子、用有期限或有成本的钱、不够客观，都会抬高γ；定投「只有一招一式」是为尽量使γ趋近于零。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第三部分-定投策略执行过程#_3-1-屡战屡败不战则胜"
+      },
+      {
+        "id": "C08",
+        "name": "p = δ + α − γ",
+        "blurb": "最终成绩：δ是选β≈1标的时随市场获得的收益（定投者对δ无能为力）；α来自开始前的谨慎选择；γ来自自我管理中的犯错。边界认知同时影响α与γ。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第三部分-定投策略执行过程#_3-1-屡战屡败不战则胜"
+      },
+      {
+        "id": "C09",
+        "name": "定投策略无法继续改良",
+        "blurb": "任何对定投的「改良」（如下跌时多买、找周几更便宜）都是徒劳：依赖滞后判断，且下一次涨跌仍是独立随机事件。核心仍是长期持有；与长期无关的细节都是鸡毛蒜皮。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第一部分-定投策略#_1-5-定投策略无法继续改良"
+      },
+      {
+        "id": "C10",
+        "name": "镜像效应",
+        "blurb": "作者自创的类比：对「长期」的认知不同，会让同一事实在人眼中呈现截然相反的意义。几乎所有惊人镜像，都因有无长期观念造成。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第四部分-客观客观更加客观#_4-3-长期教育与镜像效应"
+      },
+      {
+        "id": "C11",
+        "name": "自我边界",
+        "blurb": "自身行为能影响的现实终有边界：边界内可进取，边界外无能为力。定投中δ在自我边界之外；乱在边界外努力只会徒劳甚至抬高γ。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第四部分-客观客观更加客观#_4-5-主动与被动之间的边界"
+      },
+      {
+        "id": "C12",
+        "name": "知道与做到之间的距离",
+        "blurb": "知道与做到之间像有一道鸿沟，长期实践是跨越它的唯一方式。定投「只有买」反而留下足够时间增长见识，更可能走完这段距离。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第四部分-客观客观更加客观#_4-4-知道做到之间的距离"
+      },
+      {
+        "id": "C13",
+        "name": "长期视角下的趋势筛选",
+        "blurb": "在长期视角下，价值投资与趋势投资并不对立：有价值的标的在两个大周期后会呈复利式增长趋势。定投者多一条筛选依据——选择能长期持续成长的标的，并倾向组合而非押注单一。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第二部分-定投标的的选择#_2-2-价值投资与趋势投资"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "只买不卖：定期定量长期买入",
+        "blurb": "定投只有一招一式：选定标的后，在很长时间内定期投入定额并坚决持有。哪怕做不到严格定期定量，也要守住长期持有；其它动作几乎都会放大γ。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第三部分-定投策略执行过程#_3-1-屡战屡败不战则胜"
+      },
+      {
+        "id": "M02",
+        "name": "个人商业模式三连胜升级",
+        "blurb": "采用定投是个人商业模式的三连胜：一份时间出售很多次；从只会消费到会用钱赚钱；再从只用钱投资到还用时间投资。以此支撑可持续的场外投入。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第一部分-定投策略#_1-4-我们到底在用什么定投"
+      },
+      {
+        "id": "M03",
+        "name": "盲从已证明长期成功者的建议",
+        "blurb": "新手选标最简单有效：跟已展现长期业绩的真正成功投资者（如巴菲特持仓／伯克希尔），把公开建议当可执行组合起点；盲从难在坚定，不在听不到建议。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第二部分-定投标的的选择#_2-1-可以盲从的投资建议"
+      },
+      {
+        "id": "M04",
+        "name": "宏观观察选「局部的局部」再组合",
+        "blurb": "不要赌单一标的，也不必买「所有」。在发展更快的地区／行业做有限局部选择，再在局部中选若干标的构成组合；宏观观察的核心技巧是「不要走到极限」，以避开系统性风险。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第二部分-定投标的的选择#_2-3-长期视角与宏观观察"
+      },
+      {
+        "id": "M05",
+        "name": "无为而治：用不动降低γ",
+        "blurb": "对策常常是不动：不错过好日子，也不靠频繁交易「做点什么」。什么都不做时γ可为零；频繁交易者每年γ常至少约2%，长期会吞掉大块收益。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第三部分-定投策略执行过程#_3-2-走过路过不要错过"
+      },
+      {
+        "id": "M06",
+        "name": "用零成本、无期限的自有剩余资金",
+        "blurb": "用来定投的钱应是生活与意外准备金之外、成本为零且无清算期限的自有剩余资金。有使用期限的资金会把风险推到极端，职业管理人因此往往不具备定投资格。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第一部分-定投策略#_1-1-定投策略及其效果展示"
+      },
+      {
+        "id": "M07",
+        "name": "冷静：三脑处理完再行动",
+        "blurb": "把决策想成战车：鳄鱼脑（直觉）、猴子脑（情绪）、人类脑（理智）。冷静＝三者都处理完之前不采取任何行动；需要马上决策时，先停住比冲动出手更安全。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-changes-fate/zh-第四部分-客观客观更加客观#_4-2-绝对不要与自己为敌"
+      }
+    ],
+    "published": "2019-12-01",
+    "publishedLabel": "December 1, 2019",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2 after TOC-mistake fix; rejected TOC/chrome: 关于境内可能存在的访问困难; 总结; 分 定投策略 / 第一部分 定投策略; 分 定投标的的选择 / 第二部分…; 分 定投策略执行过程 / 第三部分…; 分 客观客观更加客观 / 第四部分…; 警告 / 关于作者 / 前言; 周一优于周日定投等雕虫小技; full-reaudit 2026-11-05: re-verified Spike gate; cards grounded in body; deep chapter sourceUrl ke",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "blockchain-little-book",
+    "title": "区块链小白书",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "笑来关于区块链入门的小书（原站 /little）。",
+    "sourceUrl": "https://xiaolai.co/little",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "区块链（不可篡改的分布式数据库）",
+        "blurb": "区块链本质是分布式维护、可不断添加却不能删除记录的数据库；每次添加需节点间共识确认有效。通俗讲是一种新的记账技术／不可篡改分布式数据库。",
+        "sourceUrl": "https://lixiaolai.com/books/blockchain-little-book/区块链#_5-目的与手段"
+      },
+      {
+        "id": "C02",
+        "name": "共识机制（节点／机器共识）",
+        "blurb": "讨论的「共识」是网络节点／机器之间的共识，不是人与人之间的共识；人际共识与区块链无关——作者特别纠正滥用。",
+        "sourceUrl": "https://lixiaolai.com/books/blockchain-little-book/区块链#_3-共识机制"
+      },
+      {
+        "id": "C03",
+        "name": "PoW／dPoS",
+        "blurb": "PoW 按贡献获权益、多劳多得，对比特币完美但对公链性能致命；dPoS 是 PoS 改良，持币投票选出节点运营，是公链性能妥协下较靠谱选择之一。",
+        "sourceUrl": "https://lixiaolai.com/books/blockchain-little-book/区块链#_2-公链"
+      },
+      {
+        "id": "C04",
+        "name": "公链",
+        "blurb": "公众都可使用的区块链应用平台设想（如以太坊想做的）；作者指出 PoW 公链难承载真正大规模应用。",
+        "sourceUrl": "https://lixiaolai.com/books/blockchain-little-book/区块链#b-兼容各种其它公链"
+      },
+      {
+        "id": "C05",
+        "name": "双花问题",
+        "blurb": "同一笔钱一次只能花在一个地方；比特币白皮书核心要解决的真问题。银行核心是记账不能记错／做假。",
+        "sourceUrl": "https://lixiaolai.com/books/blockchain-little-book/比特币#_4-比特币解决了什么问题"
+      },
+      {
+        "id": "C06",
+        "name": "去中心化是结果不是目标",
+        "blurb": "比特币方案是把账本交给大家共同维护；去中心化／公开透明是分布式管理的结果，不是目标本身——神话它们是本末倒置。",
+        "sourceUrl": "https://lixiaolai.com/books/blockchain-little-book/比特币#_4-比特币解决了什么问题"
+      },
+      {
+        "id": "C07",
+        "name": "前置引用",
+        "blurb": "难以理解的知识内部常有「后面才能深入理解的概念却提前被引用」；硬着头皮读完再重复多次可突破。",
+        "sourceUrl": "https://lixiaolai.com/books/blockchain-little-book/准备工作#_2-重复重复再重复"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "不要滥用类比",
+        "blurb": "理解全新事物时，脑子一冒「这就好像…」就强压回去；约等号≠等号，多次不恰当类比拼不出正确理解。",
+        "sourceUrl": "https://lixiaolai.com/books/blockchain-little-book/准备工作#_1-不要滥用类比"
+      },
+      {
+        "id": "M02",
+        "name": "重复重复再重复",
+        "blurb": "暂时不懂的概念不要停：继续读；读完再重复很多次——突破前置引用的必杀技。",
+        "sourceUrl": "https://lixiaolai.com/books/blockchain-little-book/准备工作#_2-重复重复再重复"
+      },
+      {
+        "id": "M03",
+        "name": "不懂不投／只投大盘币",
+        "blurb": "投资搞不懂的东西等于举火把逛炸药厂；若忍不住：做好长期打算，小白几乎只考虑 BTC／EOS 等大盘，并去读《定投改变命运》。",
+        "sourceUrl": "https://lixiaolai.com/books/blockchain-little-book/避开投资陷阱#_3-只投大盘币"
+      },
+      {
+        "id": "M04",
+        "name": "独特密码＋付费密码管理",
+        "blurb": "绝不为多个服务用同一套账号密码；用付费密码管理生成并记住；别随便把交易所当钱包。",
+        "sourceUrl": "https://lixiaolai.com/books/blockchain-little-book/避开投资陷阱#_1-钱包安全"
+      }
+    ],
+    "officialUrl": "https://lixiaolai.com/books/blockchain-little-book",
+    "alias": [
+      "区块链小书"
+    ],
+    "published": "2019-10-01",
+    "publishedLabel": "October 1, 2019",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2 from body; rejected 警告/前言/关于本书/关于作者/准备工作(作概念)",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "regular-investing-in-box",
+    "title": "定投——大佬的自我修养",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "从自我修养角度谈定投：耐心、纪律与认知更新。",
+    "officialUrl": "https://lixiaolai.com/books/regular-investing-in-box",
+    "sourceUrl": "https://lixiaolai.com/books/regular-investing-in-box",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "投资是普通人摆脱阶层固化的靠谱路径",
+        "blurb": "打拼与汗水相对成功靠谱、巨大成功靠运气／出身；对普通人，投资（尤其正确方式）是摆脱阶层固化更靠谱的路径之一。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-in-box/chapter10"
+      },
+      {
+        "id": "C02",
+        "name": "定投是普通人唯一正确投资方式",
+        "blurb": "在交易市场，普通人唯一靠谱的投资方式只有定投。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-in-box/chapter-9-6"
+      },
+      {
+        "id": "C03",
+        "name": "主动地被动",
+        "blurb": "驾驭趋势的最优策略是主动地选择被动：在主动边界内做选择，把决定命运的趋势力量交给被动持有。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-in-box/chapter-9-4"
+      },
+      {
+        "id": "C04",
+        "name": "自我边界／主动边界",
+        "blurb": "多数主动者不知道边界；决定命运的因素常在主动边界之外——先认清边界再谈主动。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-in-box/chapter-9-2"
+      },
+      {
+        "id": "C05",
+        "name": "镜像世界",
+        "blurb": "普通人在镜像世界里如何总是选对：理解镜像效应下的认知翻转。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-in-box/chapter10"
+      },
+      {
+        "id": "C06",
+        "name": "定投成功关键在心理建设",
+        "blurb": "定投策略成败关键不在技巧花样，而在心理建设能否扛过波动。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-in-box/chapter08"
+      },
+      {
+        "id": "C07",
+        "name": "对普通人长期并非永远",
+        "blurb": "好消息：普通人所需的「长期」并非无穷永远，有可把握的尺度。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-in-box/chapter13"
+      },
+      {
+        "id": "C08",
+        "name": "证券交易市场是世界第九大奇迹",
+        "blurb": "作者用「奇迹」框定市场作为普通人可接入的财富机器的独特性。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-in-box/chapter10"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "培养主动人格",
+        "blurb": "在主动边界内持续训练主动人格，避免伪主动。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-in-box/chapter-9-1"
+      },
+      {
+        "id": "M02",
+        "name": "定投作为主动地被动的践行",
+        "blurb": "用定期定额长期买入落实「主动地被动」。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-in-box/chapter-9-5"
+      },
+      {
+        "id": "M03",
+        "name": "在主动边界内找空间",
+        "blurb": "边界外交给趋势；边界内仍有可优化的行动空间。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-in-box/chapter-9-7"
+      },
+      {
+        "id": "M04",
+        "name": "别做半吊子",
+        "blurb": "有理想就不要在认知与执行上半吊子——要么学透定投逻辑并执行，要么承认未准备好。",
+        "sourceUrl": "https://lixiaolai.com/books/regular-investing-in-box/chapter11"
+      }
+    ],
+    "published": "2019-07-13",
+    "publishedLabel": "July 13, 2019",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2; replaced numbered TOC titles with mechanism names",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "the-craft-of-selfteaching",
+    "title": "自学是门手艺",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "把自学当作可习得的手艺：路径、工具与持续输出。",
+    "officialUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching",
+    "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "自学能力",
+        "blurb": "为什么一定要掌握自学能力：时代与个体成长都要求能独立习得新技能。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/为什么一定要掌握自学能力#_01-前言"
+      },
+      {
+        "id": "C02",
+        "name": "过早引用（前置引用）",
+        "blurb": "知识中后面才深入解释的概念被提前引用，造成长期懵懂；应对策略是硬读完再重复。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/如何从容应对含有过多-过早引用-的知识#过早引用就是无所不在"
+      },
+      {
+        "id": "C03",
+        "name": "刻意练习",
+        "blurb": "指向改进的有反馈练习，而非机械重复；自学者用它打通难点。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/刻意练习"
+      },
+      {
+        "id": "C04",
+        "name": "刻意思考",
+        "blurb": "与刻意练习配对：主动设计思考任务，避免滑入自动化浅层。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/刻意思考"
+      },
+      {
+        "id": "C05",
+        "name": "刚需幻觉",
+        "blurb": "以为「用不到就不学」的刚需叙事常常是幻觉，阻碍提前储备能力。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/刚需幻觉#刚需幻觉"
+      },
+      {
+        "id": "C06",
+        "name": "全面——自学的境界",
+        "blurb": "自学追求全面覆盖必要结构，而不是碎片技巧。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/全面-自学的境界"
+      },
+      {
+        "id": "C07",
+        "name": "注意力漂移",
+        "blurb": "学习时注意力被带走是默认状态；需识别并拉回。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/避免注意力漂移"
+      },
+      {
+        "id": "C08",
+        "name": "笨拙与耐心",
+        "blurb": "自学早期必然笨拙；耐心是可训练的配套品质。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/笨拙与耐心"
+      },
+      {
+        "id": "C09",
+        "name": "拆解",
+        "blurb": "把复杂技能拆成可练习单元，是自学推进的基本动作。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/拆解#横向拆解"
+      },
+      {
+        "id": "C10",
+        "name": "自学者的终点",
+        "blurb": "自学不是无尽消耗，有可描述的能力终点／交接形态。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/自学者的终点#自学是门手艺"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "用编程当自学入口",
+        "blurb": "把编程当作练习自学能力的入口领域：反馈快、可验证。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/为什么把编程当作自学的入口"
+      },
+      {
+        "id": "M02",
+        "name": "应对过早引用：重复阅读",
+        "blurb": "含过多过早引用时：不纠结，读完再多轮重复。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/如何从容应对含有过多-过早引用-的知识"
+      },
+      {
+        "id": "M03",
+        "name": "避免注意力漂移的练习",
+        "blurb": "识别漂移并恢复注意的具体做法。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/避免注意力漂移"
+      },
+      {
+        "id": "M04",
+        "name": "测试驱动的开发",
+        "blurb": "先写测试再实现，用反馈驱动学习与开发。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/测试驱动的开发"
+      },
+      {
+        "id": "M05",
+        "name": "只靠阅读习得新技能",
+        "blurb": "在条件允许时，走「纯阅读→练习」路径的方法要点。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/只靠阅读习得新技能"
+      },
+      {
+        "id": "M06",
+        "name": "自学者的社交",
+        "blurb": "自学不等于孤立：如何建设有效学伴／社区。",
+        "sourceUrl": "https://lixiaolai.com/books/the-craft-of-selfteaching/自学者的社交"
+      }
+    ],
+    "published": "2019-06-01",
+    "publishedLabel": "June 1, 2019",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2; rejected programming tutorial chapter titles (字符串/文件/正则…) as concepts",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "bitcoin-whitepaper-cn-en-translation",
+    "title": "比特币白皮书中英对照翻译",
+    "author": "李笑来（中英对照翻译）",
+    "type": "开源",
+    "summary": "中本聪比特币白皮书的中英对照译本，便于对照原文阅读。",
+    "officialUrl": "https://lixiaolai.com/books/bitcoin-whitepaper-cn-en-translation",
+    "sourceUrl": "https://lixiaolai.com/books/bitcoin-whitepaper-cn-en-translation",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "点对点电子现金",
+        "blurb": "一种允许在线支付从一方直接发送到另一方、而无需通过金融机构的电子现金系统——白皮书开宗名义的系统定义。",
+        "sourceUrl": "https://lixiaolai.com/books/bitcoin-whitepaper-cn-en-translation/full-text"
+      },
+      {
+        "id": "C02",
+        "name": "双花问题",
+        "blurb": "数字现金需解决同一笔钱被花费两次的问题；中本聪用点对点时间戳与工作量证明链处理。",
+        "sourceUrl": "https://lixiaolai.com/books/bitcoin-whitepaper-cn-en-translation/full-text"
+      },
+      {
+        "id": "C03",
+        "name": "工作量证明链／时间戳服务器",
+        "blurb": "用工作量证明实现分布式时间戳服务器，形成无法在重做工作量前更改的记录链。",
+        "sourceUrl": "https://lixiaolai.com/books/bitcoin-whitepaper-cn-en-translation/full-text#_3-时间戳服务器-timestamp-server"
+      },
+      {
+        "id": "C04",
+        "name": "最长链即诚实多数",
+        "blurb": "只要诚实节点控制的算力大于协作攻击节点，诚实链将增长最快并超过攻击链。",
+        "sourceUrl": "https://lixiaolai.com/books/bitcoin-whitepaper-cn-en-translation/full-text"
+      }
+    ],
+    "methods": [],
+    "published": "2018-10-27",
+    "publishedLabel": "October 27, 2018",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2; source is Satoshi whitepaper translation by Xiaolai — cards are Satoshi mechanisms, not Xiaolai inventions",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "the-self-cultivation-of-leeks",
+    "title": "韭菜的自我修养",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "从「韭菜」视角谈市场认知、风险与自我保护。",
+    "officialUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks",
+    "sourceUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "韭菜（交易者自我修养语境）",
+        "blurb": "市场里势单力薄的散户常自称韭菜；与「庄」相对，搭配词是「割／被割」。准确定义很少人说清，但身份叙事决定行为。",
+        "sourceUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks/zh-1-他们所说的韭菜究竟是谁"
+      },
+      {
+        "id": "C02",
+        "name": "交易并非零和（长期）",
+        "blurb": "韭菜最大错误共识：交易是零和游戏；短期高频更接近零和，长期称重则不是。",
+        "sourceUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks/zh-5-摆脱韭菜宿命的一个观念"
+      },
+      {
+        "id": "C03",
+        "name": "频次决定一切",
+        "blurb": "交易频次越高越接近零和；翻身关键路径是降低交易频率。短期投票机、长期称重机。",
+        "sourceUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks/zh-12-频次才是决定一切的根本因素"
+      },
+      {
+        "id": "C04",
+        "name": "风险厌恶的交易者",
+        "blurb": "优秀成功交易者最终是风险厌恶者；能不冒险绝不冒险；冒险≠勇敢。",
+        "sourceUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks/zh-9-喜欢冒险的最终都是韭菜"
+      },
+      {
+        "id": "C05",
+        "name": "周期 vs 趋势话术",
+        "blurb": "韭菜只谈上升／下降趋势；完整周期=上升+下降，真趋势常需多个周期后才显现；现实是波不是直线。",
+        "sourceUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks/zh-22-认识周期识别周期和把握周期"
+      },
+      {
+        "id": "C06",
+        "name": "收益风险比",
+        "blurb": "回报风险比=可能回报÷可能风险；提高它要么加大分子要么减小分母，并给出可执行手段。",
+        "sourceUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks/zh-16-正确地提升收益风险比的方法"
+      },
+      {
+        "id": "C07",
+        "name": "投机者拒绝学习／投资者善于学习",
+        "blurb": "不以长短定义投机／投资，而以是否学习研究、复盘修正来区分。",
+        "sourceUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks/zh-4-交易者们最应该掌握的能力"
+      },
+      {
+        "id": "C08",
+        "name": "孤独交易／特立独行且正确",
+        "blurb": "难的不是正确，而是特立独行且正确；共识定价时正确贬值；成功交易者需能孤独持仓。",
+        "sourceUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks/zh-20-孤独是成功交易者最宝贵品质"
+      },
+      {
+        "id": "C09",
+        "name": "不计成本地冒险更可怕",
+        "blurb": "成功交易者不玩纯骰子；可接受的是胜率明显超过50%的决策；韭菜甚至不算风险。",
+        "sourceUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks/zh-10-更可怕的是不计成本地冒险"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "按波动制定止损线",
+        "blurb": "估算标的日常波动幅度，最大可忍受亏损应高于该幅度并做更坏打算；「不要太贪心」不可执行。",
+        "sourceUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks/zh-11-止损线究竟如何制定才合理"
+      },
+      {
+        "id": "M02",
+        "name": "降低交易频率",
+        "blurb": "有意识降低交易频次，远离零和化。",
+        "sourceUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks/zh-12-频次才是决定一切的根本因素"
+      },
+      {
+        "id": "M03",
+        "name": "提高收益风险比的两侧动作",
+        "blurb": "减小分母：调止损、降单笔占比、加强场外赚钱；加大分子：更优标的、更好时机。",
+        "sourceUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks/zh-16-正确地提升收益风险比的方法"
+      },
+      {
+        "id": "M04",
+        "name": "交易前后学习与复盘",
+        "blurb": "交易前研究、交易后无论输赢总结，修正下一轮决策——成为作者定义的投资者。",
+        "sourceUrl": "https://lixiaolai.com/books/the-self-cultivation-of-leeks/zh-4-交易者们最应该掌握的能力"
+      }
+    ],
+    "published": "2018-09-21",
+    "publishedLabel": "September 21, 2018",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2; essay titles kept only when body defines mechanism; rejected memoir/chrome chapters as concepts",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "inb-principles",
+    "title": "区块链投资原则",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "面向区块链领域的投资原则整理：风险、周期与决策框架。",
+    "officialUrl": "https://lixiaolai.com/books/INB-Principles",
+    "sourceUrl": "https://lixiaolai.com/books/INB-Principles",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "区块链（INB 定义）",
+        "blurb": "公开的、由去中心化网络共同维护的账务系统，提供开放、不可篡改的底层数据服务。",
+        "sourceUrl": "https://lixiaolai.com/books/INB-Principles/zh-full-text#_2-区块链是什么"
+      },
+      {
+        "id": "C02",
+        "name": "比特币多重理解",
+        "blurb": "比特币可同时理解为：第一个也最成功的区块链应用；不属于任何权威的世界银行；该行发行的货币 BTC；以及这家银行的「股票」。多重理解造成共识困难。",
+        "sourceUrl": "https://lixiaolai.com/books/INB-Principles/zh-full-text#_3-比特币是什么"
+      },
+      {
+        "id": "C03",
+        "name": "MBA 币（Meaningful Blockchain Applications）",
+        "blurb": "作者杜撰缩写：有意义的区块链应用——尝试解决比特币尚未解决的问题；山寨币通常没有。",
+        "sourceUrl": "https://lixiaolai.com/books/INB-Principles/zh-full-text#_5-什么是-mba-币"
+      },
+      {
+        "id": "C04",
+        "name": "真正的价值 vs 以为的价值",
+        "blurb": "市场上买入的价值有两种；对买入「以为的价值」的人来说，它与真正的价值看起来一模一样。",
+        "sourceUrl": "https://lixiaolai.com/books/INB-Principles/zh-full-text#_4-什么是山寨币"
+      },
+      {
+        "id": "C05",
+        "name": "投资像镜子／右舵车",
+        "blurb": "投资领域像镜子：看似熟悉却可能左右颠倒；又像在日本开右舵车——习惯左舵者极易失控。",
+        "sourceUrl": "https://lixiaolai.com/books/INB-Principles/zh-full-text#_10-两个类比"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "INB 开源投资七问",
+        "blurb": "投前反复自问：世界真需要吗？解决了未被解决的问题吗？去中心化必要吗？必须账务公开吗？公开真提效吗？多接近 DAC？资金比例多大？用问题代替空喊原则。",
+        "sourceUrl": "https://lixiaolai.com/books/INB-Principles/zh-full-text#_9-原则"
+      }
+    ],
+    "published": "2017-06-03",
+    "publishedLabel": "June 3, 2017",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2 from full-text",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "sit-and-enjoy",
+    "title": "坐享其成",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "关于定投、长期持有与普通人财富路径的讨论。",
+    "sourceUrl": "https://xiaolai.co/books/3c76228cf822d6d30b14795b74b1481a/index",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "坐享",
+        "blurb": "作者刻意造的中文词，对应 Meditation／静观，用来与过往含混或错误解释区分：今天科学已能说清它是什么、为什么、怎么做。",
+        "sourceUrl": "https://lixiaolai.com/books/zuoxiangqicheng/为什么要用坐享这个词"
+      },
+      {
+        "id": "C02",
+        "name": "元认知能力",
+        "blurb": "认知的认知：意识到自己在思考什么，并判断、纠正思考方式与结果。作者称它几乎决定能否成长，是学习与进步的底层能力。",
+        "sourceUrl": "https://lixiaolai.com/books/zuoxiangqicheng/什么是元认知能力"
+      },
+      {
+        "id": "C03",
+        "name": "知识三要素（what／why／how）",
+        "blurb": "知识（或概念）的三个基本要素：是什么、为什么、怎么做／用。人类常在不知 what／why 时已会 how；坐享则三者都可被科学解释。",
+        "sourceUrl": "https://lixiaolai.com/books/zuoxiangqicheng/为什么要用坐享这个词"
+      },
+      {
+        "id": "C04",
+        "name": "注意力自如控制",
+        "blurb": "真正的坐享＝能集中并最终自如控制注意力；胡思乱想、放空、睡着都不算坐享，对增大皮层／增厚灰质无具体帮助。",
+        "sourceUrl": "https://lixiaolai.com/books/zuoxiangqicheng/总结"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "坐享启动八步",
+        "blurb": "安静处、计时（5–15 分钟起渐至 45–60）、舒服坐好（脊背直）、闭眼、深呼吸、注意力全放呼吸；一走神就刻意拉回，直到计时结束。",
+        "sourceUrl": "https://lixiaolai.com/books/zuoxiangqicheng/如何开始坐享#一"
+      },
+      {
+        "id": "M02",
+        "name": "身体扫描式坐享",
+        "blurb": "坐享几次后用注意力从头到脚扫描身体；遇不舒服处把注意集中过去、观察并尝试接受，常随之解脱。",
+        "sourceUrl": "https://lixiaolai.com/books/zuoxiangqicheng/如何开始坐享#二"
+      },
+      {
+        "id": "M03",
+        "name": "任意场所坐享",
+        "blurb": "练习在出租／火车／飞机／嘈杂处也能坐享，把练习从安静室扩展到真实环境。",
+        "sourceUrl": "https://lixiaolai.com/books/zuoxiangqicheng/如何开始坐享"
+      }
+    ],
+    "officialUrl": "https://lixiaolai.com/books/zuoxiangqicheng",
+    "published": "2017-06-01",
+    "publishedLabel": "June 1, 2017",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2; rejected TOC/chrome 参考文献",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "seven-years",
+    "title": "新生 —— 七年就是一辈子",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "以七年为一个周期，讨论长期主义与自我迭代。",
+    "sourceUrl": "https://xiaolai.co/books/1ef3bd91da19da1423a7c04fe1882ec9/index",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "复利",
+        "blurb": "人生最重要的概念：复利——时间维度上的非线性累积，改变命运的底层数学直觉。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/a01"
+      },
+      {
+        "id": "C02",
+        "name": "概念是一切知识的基石",
+        "blurb": "知识大厦建在清晰准确的概念上；含混概念导致含混行动。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/a10"
+      },
+      {
+        "id": "C03",
+        "name": "主动选择",
+        "blurb": "重生的关键是主动选择——不是被环境推着改命，而是持续做选择。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/a06"
+      },
+      {
+        "id": "C04",
+        "name": "活在未来而不是当下",
+        "blurb": "把注意力与资源投向未来版本的自己，而非沉溺即时反馈的「当下鸡汤」。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/a23"
+      },
+      {
+        "id": "C05",
+        "name": "践行是最根本的学习与创作",
+        "blurb": "学习与创作的根本形态是践行，而不是只输入不输出。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/a02"
+      },
+      {
+        "id": "C06",
+        "name": "不能容错的系统是脆弱的",
+        "blurb": "容错是系统韧性来源；追求零容错反而脆弱。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/a31"
+      },
+      {
+        "id": "C07",
+        "name": "自由意志",
+        "blurb": "在可选择空间里承担选择后果的能力与态度——作者专文清理常见误解。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/b05"
+      },
+      {
+        "id": "C08",
+        "name": "反向塑造",
+        "blurb": "环境与他人评价会反向塑造你；需识别暗流势力。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/a29"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "解决问题的方法论",
+        "blurb": "作者系统整理的问题解决步骤与检查方式。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/a17#一-有些问题是永远解决不了的"
+      },
+      {
+        "id": "M02",
+        "name": "类比及其方法论",
+        "blurb": "如何正当使用类比、避免滥用的方法。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/a09"
+      },
+      {
+        "id": "M03",
+        "name": "调整焦点",
+        "blurb": "不可或缺的方法论：主动调整注意力焦点以改变局面。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/a21"
+      },
+      {
+        "id": "M04",
+        "name": "销售概念与方法论",
+        "blurb": "作者销售相关概念澄清 + 可执行方法。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/a15"
+      },
+      {
+        "id": "M05",
+        "name": "惊喜与创造惊喜的方法论",
+        "blurb": "如何设计与创造惊喜的可迁移方法。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/a18#_6-保留适当的随机"
+      },
+      {
+        "id": "M06",
+        "name": "如何真正消化一本书",
+        "blurb": "读完≠消化；给出消化一本书的程序。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/a22"
+      },
+      {
+        "id": "M07",
+        "name": "如何研究新生事物",
+        "blurb": "面对新领域的研究路径。",
+        "sourceUrl": "https://lixiaolai.com/books/reborn/a32"
+      }
+    ],
+    "officialUrl": "https://lixiaolai.com/books/reborn",
+    "alias": [
+      "七年就是一辈子"
+    ],
+    "published": "2015-11-01",
+    "publishedLabel": "November 1, 2015",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2; essay collection — prefer named mechanisms/methods; rejected pure memoir titles",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "everyone-can-use-english",
+    "title": "人人都能用英语",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "强调「用」英语，而非只学语法与考试。",
+    "sourceUrl": "https://xiaolai.co/books/c558c667ad9f05ddce38f06df2d15aa3/index",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "用起来再说（先用后学）",
+        "blurb": "学习英语的关键态度：不要闲着先学满理论再启用；一上来就要用——人类常在不知 what/why 时已会 how。",
+        "sourceUrl": "https://lixiaolai.com/books/everyone-can-use-english/第一章-起点"
+      },
+      {
+        "id": "C02",
+        "name": "语音是口语的地基",
+        "blurb": "口语能力建立在可分辨、可发出的语音上；语音章系统处理音素与听辨，而非「开口瞎聊」。",
+        "sourceUrl": "https://lixiaolai.com/books/everyone-can-use-english/第三章-语音"
+      },
+      {
+        "id": "C03",
+        "name": "朗读是连接输入与口语的桥梁",
+        "blurb": "朗读把视觉输入变成可控制的口语输出训练，是可量化、可重复的练习形态。",
+        "sourceUrl": "https://lixiaolai.com/books/everyone-can-use-english/第四章-朗读#_2-朗读有助于提高文字理解能力"
+      },
+      {
+        "id": "C04",
+        "name": "词典是语言的基础设施",
+        "blurb": "查词典不是丢脸的补救，而是用英语者的日常基础设施；选对词典与查法决定进步速度。",
+        "sourceUrl": "https://lixiaolai.com/books/everyone-can-use-english/第五章-词典"
+      },
+      {
+        "id": "C05",
+        "name": "语法是被总结的规律而非教条",
+        "blurb": "语法应理解为对已有用法的总结，用来解释与生成，而不是一堆禁止清单。",
+        "sourceUrl": "https://lixiaolai.com/books/everyone-can-use-english/第六章-语法"
+      },
+      {
+        "id": "C06",
+        "name": "精读培养精度与迁移",
+        "blurb": "精读强调逐句吃透，形成可迁移的理解精度，与泛读／刷量互补。",
+        "sourceUrl": "https://lixiaolai.com/books/everyone-can-use-english/第七章-精读"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "口语：以用为导向的开口练习",
+        "blurb": "按口语章路径：在真实表达任务里练，而不是等「准备好了」再开口。",
+        "sourceUrl": "https://lixiaolai.com/books/everyone-can-use-english/第二章-口语"
+      },
+      {
+        "id": "M02",
+        "name": "语音跟读／听辨流程",
+        "blurb": "按语音章做系统听辨与跟读，打好地基再谈流利。",
+        "sourceUrl": "https://lixiaolai.com/books/everyone-can-use-english/第三章-语音"
+      },
+      {
+        "id": "M03",
+        "name": "朗读日课",
+        "blurb": "固定朗读材料与时长，把输入转成可检查的口语输出。",
+        "sourceUrl": "https://lixiaolai.com/books/everyone-can-use-english/第四章-朗读"
+      },
+      {
+        "id": "M04",
+        "name": "叮嘱：长期坚持的检查清单",
+        "blurb": "叮嘱章收束常见半途而废点，当作自检清单反复对照。",
+        "sourceUrl": "https://lixiaolai.com/books/everyone-can-use-english/第五章-词典#_2-不查词典者死"
+      }
+    ],
+    "officialUrl": "https://lixiaolai.com/books/everyone-can-use-english",
+    "published": "2010-06-01",
+    "publishedLabel": "June 1, 2010",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2; rejected bare TOC names 起点/口语/语音 as sole concept labels without mechanism blurbs",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "time-as-friend",
+    "title": "把时间当作朋友",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "关于积累、心智与自我管理的个人成长读物。",
+    "sourceUrl": "https://xiaolai.co/books/7fa8fcfa612989251007dafde19a1e86/index",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "把时间当作朋友",
+        "blurb": "时间不是敌人或抽象资源，而是可与之相处的「朋友」——核心态度重框，贯穿全书。",
+        "sourceUrl": "https://lixiaolai.com/books/befriending-time/第一章醒悟#_3-我的案例"
+      },
+      {
+        "id": "C02",
+        "name": "元认知能力（时间书）",
+        "blurb": "思考时可思考「思考方式与结果是否合理」——元认知；与坐享书互文，是管理时间的底层能力。",
+        "sourceUrl": "https://lixiaolai.com/books/befriending-time/第一章醒悟#_1-孰主孰仆"
+      },
+      {
+        "id": "C03",
+        "name": "困境先于方法",
+        "blurb": "第〇章先承认常见时间困境（忙乱、拖延、虚假努力），再谈管理——问题意识先于技巧。",
+        "sourceUrl": "https://lixiaolai.com/books/befriending-time/第章-困境#_1-问题"
+      },
+      {
+        "id": "C04",
+        "name": "现实约束",
+        "blurb": "时间管理必须承认生理、社会与注意力的现实约束，幻想「有更多时间」通常无效。",
+        "sourceUrl": "https://lixiaolai.com/books/befriending-time/第二章现实"
+      },
+      {
+        "id": "C05",
+        "name": "管理的对象是选择不是钟表",
+        "blurb": "所谓管理时间，实质是管理选择与注意力投放，而不是把钟点填满。",
+        "sourceUrl": "https://lixiaolai.com/books/befriending-time/第三章管理#_6-感知时间"
+      },
+      {
+        "id": "C06",
+        "name": "学习是与时间做朋友的主通道",
+        "blurb": "持续学习改变未来时间的质量与选择空间；学习章把学习定义为时间策略而非课外活动。",
+        "sourceUrl": "https://lixiaolai.com/books/befriending-time/第二章现实#_6-与时间做朋友"
+      },
+      {
+        "id": "C07",
+        "name": "思考质量决定时间质量",
+        "blurb": "思考章处理如何想清楚，避免用忙碌替代思考。",
+        "sourceUrl": "https://lixiaolai.com/books/befriending-time/第七章应用#_4-比较"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "时间管理实践",
+        "blurb": "管理章中的可执行安排：记录、取舍、减少虚假忙碌。",
+        "sourceUrl": "https://lixiaolai.com/books/befriending-time/第三章管理#_9-计划"
+      },
+      {
+        "id": "M02",
+        "name": "应用：把原则落到日常",
+        "blurb": "应用章把前述原则落到具体生活场景，反复践行而非一次读完。",
+        "sourceUrl": "https://lixiaolai.com/books/befriending-time/第七章应用"
+      },
+      {
+        "id": "M03",
+        "name": "交流中的时间观",
+        "blurb": "交流章：沟通与协作里如何尊重彼此时间、减少空转。",
+        "sourceUrl": "https://lixiaolai.com/books/befriending-time/第六章交流"
+      }
+    ],
+    "officialUrl": "https://lixiaolai.com/books/befriending-time",
+    "published": "2009-06-01",
+    "publishedLabel": "June 1, 2009",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2; rejected bare part titles 醒悟/应用/交流 as concept names",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "i-have-something-to-say",
+    "title": "我也有话要说",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "面向普通人的表达与讲演基本功。",
+    "sourceUrl": "https://xiaolai.co/books/eba39b60cf1c0a10a097db8570d55b54/index",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "千万别装",
+        "blurb": "演讲／表达第一戒：装出来的权威会迅速被识破，伤害信任。",
+        "sourceUrl": "https://lixiaolai.com/books/i-have-a-say/一千万别装"
+      },
+      {
+        "id": "C02",
+        "name": "一次只说一件事",
+        "blurb": "单次表达只推进一个核心命题，避免堆叠导致零吸收。",
+        "sourceUrl": "https://lixiaolai.com/books/i-have-a-say/八一次只说一件事"
+      },
+      {
+        "id": "C03",
+        "name": "你有99%可能被误解",
+        "blurb": "默认听众会误解；表达责任在说清，不在抱怨听众。",
+        "sourceUrl": "https://lixiaolai.com/books/i-have-a-say/九你有-99的可能性被误解"
+      },
+      {
+        "id": "C04",
+        "name": "更可能是你自己没说清楚",
+        "blurb": "沟通失败优先自查表达，而不是归咎听众。",
+        "sourceUrl": "https://lixiaolai.com/books/i-have-a-say/十更可能是你自己没说清楚"
+      },
+      {
+        "id": "C05",
+        "name": "证明他人错误≠证明自己正确",
+        "blurb": "驳倒对方不等于立住己方；需要独立的正面论证。",
+        "sourceUrl": "https://lixiaolai.com/books/i-have-a-say/二十五证明他人错误证明自己正确"
+      },
+      {
+        "id": "C06",
+        "name": "是什么与不是什么",
+        "blurb": "说清楚「是什么」更要说清楚「不是什么」，边界带来精度。",
+        "sourceUrl": "https://lixiaolai.com/books/i-have-a-say/三十要说清楚是什么更要说清楚不是什么"
+      },
+      {
+        "id": "C07",
+        "name": "契诃夫之枪",
+        "blurb": "提到的元素要有后果；用来制造表达效果的利器。",
+        "sourceUrl": "https://lixiaolai.com/books/i-have-a-say/十九制造效果的利器契诃夫之枪"
+      },
+      {
+        "id": "C08",
+        "name": "信任你的听众",
+        "blurb": "把听众当能思考的成年人，而不是灌输对象。",
+        "sourceUrl": "https://lixiaolai.com/books/i-have-a-say/二信任你的听众"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "日常谈话当练习场",
+        "blurb": "把日常谈话当作演讲练习的最佳机会。",
+        "sourceUrl": "https://lixiaolai.com/books/i-have-a-say/三十五日常谈话是最好的练习机会"
+      },
+      {
+        "id": "M02",
+        "name": "先学会听再学会讲",
+        "blurb": "为了学会讲，先学会听。",
+        "sourceUrl": "https://lixiaolai.com/books/i-have-a-say/二十六为了学会讲要先学会听"
+      },
+      {
+        "id": "M03",
+        "name": "结论时机",
+        "blurb": "什么时候说结论：按情境选择先结论或后结论。",
+        "sourceUrl": "https://lixiaolai.com/books/i-have-a-say/三十八什么时候说结论"
+      },
+      {
+        "id": "M04",
+        "name": "停顿",
+        "blurb": "新手难掌握的重要技巧：停顿——给听众处理时间。",
+        "sourceUrl": "https://lixiaolai.com/books/i-have-a-say/二十二新手最难掌握的重要技巧停顿"
+      },
+      {
+        "id": "M05",
+        "name": "视觉辅助从简",
+        "blurb": "使用视觉辅助的第一原则：简单；并小心被工具绑架。",
+        "sourceUrl": "https://lixiaolai.com/books/i-have-a-say/三十三使用视觉辅助工具的第一原则简单"
+      },
+      {
+        "id": "M06",
+        "name": "克服紧张",
+        "blurb": "紧张的应对步骤与认知重框。",
+        "sourceUrl": "https://lixiaolai.com/books/i-have-a-say/三十九如何克服紧张"
+      }
+    ],
+    "officialUrl": "https://lixiaolai.com/books/i-have-a-say",
+    "alias": [
+      "我也有话要说 - 普通人的讲演技能"
+    ],
+    "published": "2006-05-01",
+    "publishedLabel": "May 1, 2006",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2; speechcraft essays — keep principle/mechanism cards only",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "toefl-ibt-essay",
+    "title": "TOEFL iBT 高分作文",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "托福写作高分范文与写法要点整理（李笑来相关著作）。",
+    "officialUrl": "https://lixiaolai.com/books/twe185",
+    "sourceUrl": "https://lixiaolai.com/books/twe185",
+    "concepts": [],
+    "methods": [],
+    "published": "2006-01-01",
+    "publishedLabel": "January 1, 2006",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2: book is 185 sample essay prompts/answers — NOT author-named concepts; cleared overnight TOC-as-concept cards",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "english-comparatives",
+    "title": "如何写好英文书面比较句",
+    "author": "李笑来",
+    "type": "开源",
+    "summary": "聚焦英文比较句写法的专项小册。",
+    "sourceUrl": "https://xiaolai.co/books/8724bd963e758a48a168d955e711485b/index",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "书面比较句是特殊并列句",
+        "blurb": "书面比较句由两个句子经并列连词 than／第二个 as 并列而成；than／as 在书面比较句中词性是并列连词。",
+        "sourceUrl": "https://lixiaolai.com/books/writing-comparison-in-english/正文#重点1-书面比较句其实是一种特殊的并列句。"
+      },
+      {
+        "id": "C02",
+        "name": "比较对象同范畴同属性",
+        "blurb": "相互比较的两个对象一般应属同一范畴且拥有相同属性；英文也允许比较同一事物的两种不同属性。",
+        "sourceUrl": "https://lixiaolai.com/books/writing-comparison-in-english/正文#重点5-一般来说-相互比较的两个对象应该-1-属于同一范畴-2-拥有相同属性。"
+      },
+      {
+        "id": "C03",
+        "name": "比较句的参照系",
+        "blurb": "比较句意义依赖上下文；第二个句子是参照系。",
+        "sourceUrl": "https://lixiaolai.com/books/writing-comparison-in-english/重点总结"
+      },
+      {
+        "id": "C04",
+        "name": "counterpart 是比较句中的代词",
+        "blurb": "counterpart 本质是比较句里的代词用法。",
+        "sourceUrl": "https://lixiaolai.com/books/writing-comparison-in-english/重点总结"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "书面比较句保留第二句谓语",
+        "blurb": "第二个句子谓语建议不要省略，以免主宾格歧义；非系动词可用 do 的恰当时态替换；谓语可倒装。",
+        "sourceUrl": "https://lixiaolai.com/books/writing-comparison-in-english/正文#重点1-书面比较句其实是一种特殊的并列句。"
+      },
+      {
+        "id": "M02",
+        "name": "比较名词属性时的 more of／as much of",
+        "blurb": "比较名词属性时 more 后加 of；as 后加 much of；第二所属格常用 that/those of…。",
+        "sourceUrl": "https://lixiaolai.com/books/writing-comparison-in-english/重点总结"
+      }
+    ],
+    "officialUrl": "https://lixiaolai.com/books/writing-comparison-in-english",
+    "published": "2004-03-01",
+    "publishedLabel": "March 1, 2004",
+    "models": [],
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2 from 正文+重点总结; rejected 简介/正文/重点总结作空概念名",
+      "at": "2026-11-05"
+    }
+  },
+  {
+    "id": "mastering-bitcoin",
+    "title": "精通比特币",
+    "author": "Andreas M. Antonopoulos（中文相关译本见于笑来搜）",
+    "type": "EPUB",
+    "summary": "比特币原理、机制与实践的技术入门书。",
+    "sourceUrl": "https://xiaolai.co/books/bd38d048cec27b30b1518dc739a8b2b4/index",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "比特币作为点对点电子现金",
+        "blurb": "比特币被定义为不经金融机构的点对点电子现金系统——全书问题设定。",
+        "sourceUrl": "https://xiaolai.co/books/bd38d048cec27b30b1518dc739a8b2b4/Chapter01.html#%E7%AC%AC1%E7%AB%A0-%E4%BB%8B%E7%BB%8D"
+      },
+      {
+        "id": "C02",
+        "name": "公私钥与地址",
+        "blurb": "所有权由私钥控制；地址由公钥派生——比特币所有权的密码学基础。",
+        "sourceUrl": "https://xiaolai.co/books/bd38d048cec27b30b1518dc739a8b2b4/Chapter04.html#%E7%AC%AC4%E7%AB%A0-%E5%AF%86%E9%92%A5%E3%80%81%E5%9C%B0%E5%9D%80%E3%80%81%E9%92%B1%E5%8C%85"
+      },
+      {
+        "id": "C03",
+        "name": "交易与UTXO",
+        "blurb": "比特币用未花费交易输出（UTXO）模型表达余额与转移，而非账户余额模型。",
+        "sourceUrl": "https://xiaolai.co/books/bd38d048cec27b30b1518dc739a8b2b4/Chapter05.html#%E7%AC%AC5%E7%AB%A0-%E4%BA%A4%E6%98%93"
+      },
+      {
+        "id": "C04",
+        "name": "区块链",
+        "blurb": "区块按哈希链接形成不可篡改账本结构。",
+        "sourceUrl": "https://xiaolai.co/books/bd38d048cec27b30b1518dc739a8b2b4/Chapter07.html#calibre_toc_10"
+      },
+      {
+        "id": "C05",
+        "name": "挖矿与共识",
+        "blurb": "工作量证明挖矿竞争出块并在全网达成共识、抵抗双花。",
+        "sourceUrl": "https://xiaolai.co/books/bd38d048cec27b30b1518dc739a8b2b4/Chapter08.html#calibre_toc_11"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "使用比特币客户端",
+        "blurb": "通过客户端／钱包实际收发与观察链上状态，把原理落到可操作步骤。",
+        "sourceUrl": "https://xiaolai.co/books/bd38d048cec27b30b1518dc739a8b2b4/Chapter03.html#%E7%AC%AC3%E7%AB%A0-%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%A2%E6%88%B7%E7%AB%AF"
+      }
+    ],
+    "published": null,
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2 from xiaolai.co translation; keep only body-grounded Bitcoin mechanisms with chapter deep links; not TOC labels",
+      "at": "2026-11-05"
+    },
+    "models": []
+  },
+  {
+    "id": "principles",
+    "title": "原则",
+    "author": "雷·达利欧（Ray Dalio）；笑来搜收录译本",
+    "type": "EPUB",
+    "summary": "达利欧关于生活原则与工作原则的系统总结（非李笑来著作）。",
+    "sourceUrl": "https://xiaolai.co/books/90fea13fadb9e5b2c207a899653aad70/index",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "原则的重要性",
+        "blurb": "原则是应对现实反复出现的情形时，可复用的决策算法；没有原则就只能临场情绪决策。",
+        "sourceUrl": "https://xiaolai.co/books/90fea13fadb9e5b2c207a899653aad70/Part01.html#calibre_toc_3"
+      },
+      {
+        "id": "C02",
+        "name": "极度求真与极度透明",
+        "blurb": "把真相与透明当作组织／个人操作系统的默认设置，以降低自欺与政治成本。",
+        "sourceUrl": "https://xiaolai.co/books/90fea13fadb9e5b2c207a899653aad70/Part02.html"
+      },
+      {
+        "id": "C03",
+        "name": "可信度加权",
+        "blurb": "意见按可信度加权，而不是一人一票或职位大小——决策质量机制。",
+        "sourceUrl": "https://xiaolai.co/books/90fea13fadb9e5b2c207a899653aad70/Part02.html"
+      },
+      {
+        "id": "C04",
+        "name": "五步流程",
+        "blurb": "目标→问题→诊断→设计→做事：从愿望到结果的个人进化五步。",
+        "sourceUrl": "https://xiaolai.co/books/90fea13fadb9e5b2c207a899653aad70/Part303SummaryandTableofPrinciples.html#to-get-the-culture-right%E2%80%A6-br-%E5%A1%91%E9%80%A0%E8%89%AF%E5%A5%BD%E7%9A%84%E5%85%AC%E5%8F%B8%E6%96%87%E5%8C%96"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "实现梦想的五大步骤",
+        "blurb": "把五步流程当执行清单：设定目标、识别问题、诊断根因、设计方案、落实并迭代。",
+        "sourceUrl": "https://xiaolai.co/books/90fea13fadb9e5b2c207a899653aad70/Part208My5StepProcesstoGettingWhatYouWantOutofLife.html#-br-my-5-step-process-to-getting-what-you-want-out-of-life-br-br-%E5%AE%9E%E7%8E%B0%E6%A2%A6%E6%83%B3%E7%9A%84%E4%BA%94%E5%A4%A7%E6%AD%A5%E9%AA%A4"
+      },
+      {
+        "id": "M02",
+        "name": "用原则做决策",
+        "blurb": "遇事先查／写原则，再决策；把例外反馈回原则库。",
+        "sourceUrl": "https://xiaolai.co/books/90fea13fadb9e5b2c207a899653aad70/Part01.html"
+      }
+    ],
+    "published": null,
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2 from xiaolai.co Dalio translation; fewer grounded principle cards with deep Part links",
+      "at": "2026-11-05"
+    },
+    "models": []
+  },
+  {
+    "id": "new-english-reading",
+    "title": "新编英语阅读手册",
+    "author": "李笑来",
+    "type": "EPUB",
+    "summary": "面向英语阅读能力提升的材料与方法整理。",
+    "sourceUrl": "https://xiaolai.co/books/f79b2a287ab8547ec641a4960ea1ff62/index",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "英语形象联想教学法",
+        "blurb": "以介词／副词等关联词为引子，把「动词+介词」短语按英语思维形象化理解，而不是死记硬背。",
+        "sourceUrl": "https://xiaolai.co/books/f79b2a287ab8547ec641a4960ea1ff62/index.html#%EF%BC%88%E4%B8%80%EF%BC%89"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "按关联词切入掌握搭配",
+        "blurb": "阅读／自学时以常用关联词为入口，分类汇总搭配用法，形成形象与语感。",
+        "sourceUrl": "https://xiaolai.co/books/f79b2a287ab8547ec641a4960ea1ff62/index.html#%E6%96%B0%E7%BC%96%E8%8B%B1%E8%AF%AD%E9%98%85%E8%AF%BB%E6%89%8B%E5%86%8C"
+      }
+    ],
+    "published": null,
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2 from xiaolai.co intro; word-usage chapters are NOT concept cards; cleared overnight invented cards",
+      "at": "2026-11-05"
+    },
+    "models": []
+  },
+  {
+    "id": "yc-growth-notes",
+    "title": "成长 YC创业课 笔记",
+    "author": "笔记整理（YC 课程相关）",
+    "type": "EPUB",
+    "summary": "围绕 YC 创业课的笔记与要点摘录。",
+    "sourceUrl": "https://xiaolai.co/books/8327ac77840b8e66d8245eef28052099/index",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "Idea（YC语境）",
+        "blurb": "在本课里 Idea 不是「点子灵感」，而是可被验证、可被构建的问题—解决方案组合；笑来专文清理概念。",
+        "sourceUrl": "https://xiaolai.co/books/8327ac77840b8e66d8245eef28052099/about-the-clear-concept-of-idea-in-the-course.html#calibre_toc_4"
+      },
+      {
+        "id": "C02",
+        "name": "肯定后件",
+        "blurb": "从「若P则Q；Q；故P」这种无效推理掉进的逻辑陷阱；作者指出约七成的人会中招。",
+        "sourceUrl": "https://xiaolai.co/books/8327ac77840b8e66d8245eef28052099/affirming-the-consequence-where-70-percent-of-population-fail-to-understand.html#calibre_toc_5"
+      },
+      {
+        "id": "C03",
+        "name": "归因谬误",
+        "blurb": "把结果错误归因到显眼因素上——创业判断里尤其危险。",
+        "sourceUrl": "https://xiaolai.co/books/8327ac77840b8e66d8245eef28052099/attribution-fallacy.html#calibre_toc_55"
+      },
+      {
+        "id": "C04",
+        "name": "不信不如不知",
+        "blurb": "面对关键判断，宁可信其成立并据此行动，也不要停在「知道一点」却不信的悬浮态。",
+        "sourceUrl": "https://xiaolai.co/books/8327ac77840b8e66d8245eef28052099/better-believe-in-than-understand-or-know.html#calibre_toc_29"
+      },
+      {
+        "id": "C05",
+        "name": "Competition is for losers",
+        "blurb": "真正的好生意尽量避开红海竞争；竞争往往意味着没有足够差异化。",
+        "sourceUrl": "https://xiaolai.co/books/8327ac77840b8e66d8245eef28052099/competition-is-for-losers.html#%E5%85%B3%E4%BA%8E%E7%AB%9E%E4%BA%89%E4%B8%8E%E5%9E%84%E6%96%AD"
+      },
+      {
+        "id": "C06",
+        "name": "反共识（Contrarian）",
+        "blurb": "有价值的创业观点往往是正确且反共识的——难在既对又少数。",
+        "sourceUrl": "https://xiaolai.co/books/8327ac77840b8e66d8245eef28052099/contrarian.html#%E6%80%8E%E6%A0%B7%E7%89%B9%E7%AB%8B%E7%8B%AC%E8%A1%8C%E6%89%8D%E5%A5%BD%EF%BC%9F"
+      },
+      {
+        "id": "C07",
+        "name": "顺势增长",
+        "blurb": "增长要借趋势／浪潮，而不是只靠蛮力获客。",
+        "sourceUrl": "https://xiaolai.co/books/8327ac77840b8e66d8245eef28052099/grow-with-the-trend.html"
+      },
+      {
+        "id": "C08",
+        "name": "你从没觉得需要，但现在离不开",
+        "blurb": "顶尖产品常创造「事前无感、事后刚需」的体验。",
+        "sourceUrl": "https://xiaolai.co/books/8327ac77840b8e66d8245eef28052099/you-never-thought-you-needed-it-but-now-you-cant-live-without-it.html"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "先成为你自己用户的专家",
+        "blurb": "创业者应深度理解自己的用户，成为用户问题的专家，而不是外包理解。",
+        "sourceUrl": "https://xiaolai.co/books/8327ac77840b8e66d8245eef28052099/becoming-the-expert-of-your-own-users.html#%E7%B2%BE%E9%80%9A%E4%BD%A0%E7%9A%84%E7%94%A8%E6%88%B7"
+      },
+      {
+        "id": "M02",
+        "name": "从解决自己的问题起步",
+        "blurb": "优先从自己真正痛的问题出发做产品。",
+        "sourceUrl": "https://xiaolai.co/books/8327ac77840b8e66d8245eef28052099/should-you-better-start-from-solving-your-own-problems.html#%E5%85%88%E4%BB%8E%E8%A7%A3%E5%86%B3%E8%87%AA%E5%B7%B1%E7%9A%84%E9%9C%80%E6%B1%82-%E9%97%AE%E9%A2%98%E5%BC%80%E5%A7%8B%EF%BC%9F"
+      },
+      {
+        "id": "M03",
+        "name": "写下来是好习惯",
+        "blurb": "把判断与计划写下来，对抗模糊与自我欺骗。",
+        "sourceUrl": "https://xiaolai.co/books/8327ac77840b8e66d8245eef28052099/writing-down-is-a-good-habit.html#calibre_toc_51"
+      },
+      {
+        "id": "M04",
+        "name": "Operating vs Editing 思维框架",
+        "blurb": "区分「运营式推进」与「编辑式取舍」两种思考模式。",
+        "sourceUrl": "https://xiaolai.co/books/8327ac77840b8e66d8245eef28052099/framework-of-thinking-operating-vs-editing.html#%E5%83%8F%E7%BC%96%E8%BE%91%E4%B8%80%E6%A0%B7%E8%BF%90%E8%90%A5"
+      }
+    ],
+    "published": null,
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2 from xiaolai.co (now reachable); Xiaolai commentary framing YC concepts; cleared overnight invented 3 cards",
+      "at": "2026-11-05"
+    },
+    "models": []
+  },
+  {
+    "id": "jiji-guide",
+    "title": "挤挤都会有的 - 写给女生的性高潮指南",
+    "author": "相关作者（笑来搜收录）",
+    "type": "EPUB",
+    "summary": "面向女性的性知识与自我认知普及读物。",
+    "sourceUrl": "https://xiaolai.co/books/cef5c9098f23d1b9b41f262a42989651/index",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "往外挤（而非向里收）",
+        "blurb": "反直觉机制：想让内部更「紧」、启动／加强高潮体验，关键动作是往外挤，而不是向里收。",
+        "sourceUrl": "https://xiaolai.co/books/cef5c9098f23d1b9b41f262a42989651/ji.html#%E6%8C%A4"
+      },
+      {
+        "id": "C02",
+        "name": "高潮更多源自大脑",
+        "blurb": "对女性而言高潮更大程度上是大脑体验，而非单纯性器能力。",
+        "sourceUrl": "https://xiaolai.co/books/cef5c9098f23d1b9b41f262a42989651/myths.html#%E5%85%B3%E4%BA%8E%E6%80%A7%E9%AB%98%E6%BD%AE%E7%9A%84%E5%90%84%E7%A7%8D%E8%B0%AC%E8%AF%AF"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "用纠谬清单清理错误信念",
+        "blurb": "先读谬误章对照常见迷信，再进入正文练习。",
+        "sourceUrl": "https://xiaolai.co/books/cef5c9098f23d1b9b41f262a42989651/myths.html"
+      }
+    ],
+    "published": null,
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2 from xiaolai.co gitbook body; cleared overnight placeholders",
+      "at": "2026-11-05"
+    },
+    "models": []
+  },
+  {
+    "id": "how-to-start-a-startup",
+    "title": "How To Start A Startup - A YC Course",
+    "author": "Y Combinator（课程笔记/材料）",
+    "type": "EPUB",
+    "summary": "YC 创业公开课相关材料（英文）。",
+    "sourceUrl": "https://xiaolai.co/books/79d51c0829dc130ac335479915e9b6c2/index",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "Ideas / Products / Teams / Execution",
+        "blurb": "创业成败的四件套框架：想法、产品、团队与执行。",
+        "sourceUrl": "https://xiaolai.co/books/79d51c0829dc130ac335479915e9b6c2/Lecture02.html#calibre_toc_3"
+      },
+      {
+        "id": "C02",
+        "name": "垄断优于竞争",
+        "blurb": "好的生意追求垄断式差异化；竞争往往是失败信号（Thiel）。",
+        "sourceUrl": "https://xiaolai.co/books/79d51c0829dc130ac335479915e9b6c2/Lecture05.html"
+      },
+      {
+        "id": "C03",
+        "name": "Doing things that don't scale",
+        "blurb": "早期必须做不可规模化的事，才能启动飞轮。",
+        "sourceUrl": "https://xiaolai.co/books/79d51c0829dc130ac335479915e9b6c2/Lecture08.html#calibre_toc_9"
+      },
+      {
+        "id": "C04",
+        "name": "反直觉的创业部分",
+        "blurb": "创业里大量正确做法与常识相反。",
+        "sourceUrl": "https://xiaolai.co/books/79d51c0829dc130ac335479915e9b6c2/Lecture03.html"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "与用户交谈、打磨产品",
+        "blurb": "通过持续与用户交谈构建／迭代产品。",
+        "sourceUrl": "https://xiaolai.co/books/79d51c0829dc130ac335479915e9b6c2/Lecture04.html"
+      },
+      {
+        "id": "M02",
+        "name": "不可规模化启动",
+        "blurb": "早期亲自做不可规模化的销售／支持／运营动作。",
+        "sourceUrl": "https://xiaolai.co/books/79d51c0829dc130ac335479915e9b6c2/Lecture08.html"
+      },
+      {
+        "id": "M03",
+        "name": "增长机制设计",
+        "blurb": "把增长当成可分析、可实验的系统。",
+        "sourceUrl": "https://xiaolai.co/books/79d51c0829dc130ac335479915e9b6c2/Lecture06.html"
+      }
+    ],
+    "published": null,
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2 from xiaolai.co YC transcripts; cleared overnight placeholders",
+      "at": "2026-11-05"
+    },
+    "models": []
+  },
+  {
+    "id": "xuexi-xuexi",
+    "title": "学习学习再学习",
+    "author": "李笑来",
+    "type": "公众号",
+    "summary": "李笑来公众号文章合集入口（笑来搜同步）。",
+    "sourceUrl": "https://xiaolai.co/books/xiaolai-xuexi/index",
+    "concepts": [
+      {
+        "id": "C01",
+        "name": "好好生活的首要原则",
+        "blurb": "作者点名「好好生活」的首要原则——把生活原则当可执行优先级。",
+        "sourceUrl": "https://xiaolai.co/books/xiaolai-xuexi/00cfee38ddcbb38b3e8703bdc5b472c6.html#activity-name"
+      },
+      {
+        "id": "C02",
+        "name": "销售概念",
+        "blurb": "清理「销售」究竟是什么：价值匹配与交换，而非忽悠。",
+        "sourceUrl": "https://xiaolai.co/books/xiaolai-xuexi/0206f8cfc50f13b8eb959e675b40c3ab.html#activity-name"
+      }
+    ],
+    "methods": [
+      {
+        "id": "M01",
+        "name": "如何阅读一本书",
+        "blurb": "把读完变成可迁移能力的阅读程序。",
+        "sourceUrl": "https://xiaolai.co/books/xiaolai-xuexi/002cc8b25bc9720aa2b05fe0ee818f40.html#activity-name"
+      },
+      {
+        "id": "M02",
+        "name": "销售方法论",
+        "blurb": "与销售概念配套的可执行方法。",
+        "sourceUrl": "https://xiaolai.co/books/xiaolai-xuexi/0206f8cfc50f13b8eb959e675b40c3ab.html"
+      }
+    ],
+    "published": null,
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2; essay corpus — fewer named essays with deep links; cleared overnight placeholders",
+      "at": "2026-11-05"
+    },
+    "models": []
+  },
+  {
+    "id": "mao-shuo",
+    "title": "猫说",
+    "author": "猫叔",
+    "type": "公众号",
+    "summary": "猫叔公众号文章合集入口（笑来搜同步）。",
+    "sourceUrl": "https://xiaolai.co/books/INB-LAOMAO/index",
+    "concepts": [],
+    "methods": [],
+    "published": null,
+    "conceptSource": {
+      "kind": "machine-draft-v2-spike",
+      "note": "spike-standard re-extract v2: essay/market commentary sample lacks reusable named concept mechanisms; cleared overnight invented cards",
+      "at": "2026-11-05"
+    },
+    "models": []
+  }
+]
