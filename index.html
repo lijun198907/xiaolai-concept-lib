@@ -19,7 +19,7 @@
     root.style.colorScheme = theme === 'night' ? 'dark' : 'light';
   })();
   </script>
-  <link rel="stylesheet" href="assets/css/style.css?v=20261115b">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261115c">
 </head>
 <body data-page="home">
   <a class="skip-link" href="#content">跳到内容</a>
@@ -46,7 +46,10 @@
       <h1>概念书库</h1>
       <p class="lead">搜概念、方法论，或书里的原话。结果可打开对应卡片，也可跳到李笑来原站看上下文。版权书只做书目与摘录，全文请回原站。</p>
       <div class="search-box" role="search">
-        <input type="search" data-search-input placeholder="搜索概念、方法论或原文，例如：财富、时间、定投" aria-label="搜索">
+        <div class="search-field">
+          <span class="search-hint" id="search-hint"><span class="hint-lead">搜索概念、方法论或原文，</span><span class="hint-examples">例如：财富、时间、定投</span></span>
+          <input type="search" data-search-input placeholder=" " aria-labelledby="search-hint">
+        </div>
         <button type="button" data-search-btn>搜索</button>
       </div>
 
