@@ -207,6 +207,32 @@ a:hover { text-decoration: underline; }
   padding: 0 .15em;
   border-radius: 2px;
 }
+.result-item .result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .15rem 1.1rem;
+  margin-top: .45rem;
+}
+.result-item .result-context {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: .25rem 0;
+  font-size: .92rem;
+}
+.result-item .result-book-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: .25rem 0;
+  font-size: .88rem;
+  color: var(--muted);
+}
+.result-item .result-book-link:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
 .empty-state {
   text-align: center;
   color: var(--muted);

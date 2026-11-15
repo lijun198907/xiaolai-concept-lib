@@ -1,5 +1,6 @@
 (function () {
-  const DATA_URL = 'data/books.json?v=20261105q';
+  const DATA_URL = 'data/books.json?v=20261115a';
+  const PASSAGES_URL = 'data/passages.json?v=20261115a';
   const USER_KEY = 'concept-lib:user';
   const KIND_META = {
     concept: { noun: '概念', section: 'concepts', hashPrefix: 'concept-', openAttr: 'data-open-item', listLabel: '关键概念' },
@@ -145,6 +146,92 @@
     return res.json();
   }
 
+  function expandPassageUrl(u, base) {
+    if (!u) return '';
+    if (/^https?:/i.test(u)) return u;
+    return (base || 'https://lixiaolai.com/books/') + u;
+  }
+
+  function normalizePassages(data) {
+    if (!data) return [];
+    if (Array.isArray(data)) {
+      return data.map(p => ({
+        bookId: p.bookId || p.b,
+        bookTitle: p.bookTitle || '',
+        heading: p.heading || p.h || '',
+        url: expandPassageUrl(p.url || p.u, ''),
+        text: p.text || p.t || '',
+        snippet: p.snippet || p.s || ''
+      }));
+    }
+    const base = data.base || 'https://lixiaolai.com/books/';
+    const titles = data.books || {};
+    return (data.passages || []).map(p => {
+      const bookId = p.bookId || p.b;
+      return {
+        bookId,
+        bookTitle: p.bookTitle || titles[bookId] || '',
+        heading: p.heading || p.h || '',
+        url: expandPassageUrl(p.url || p.u, base),
+        text: p.text || p.t || '',
+        snippet: p.snippet || p.s || ''
+      };
+    });
+  }
+
+  async function loadPassages() {
+    try {
+      const res = await fetch(PASSAGES_URL);
+      if (!res.ok) return [];
+      return normalizePassages(await res.json());
+    } catch (err) {
+      console.warn('passage index unavailable', err);
+      return [];
+    }
+  }
+
+  function chapterKey(url) {
+    if (!url) return '';
+    try {
+      const u = new URL(url, 'https://lixiaolai.com');
+      return (u.origin + u.pathname).replace(/\/+$/, '');
+    } catch (e) {
+      return String(url).split('#')[0].replace(/\/+$/, '');
+    }
+  }
+
+  function excerptAround(text, q, maxLen) {
+    const source = String(text || '').replace(/\s+/g, ' ').trim();
+    if (!source) return '';
+    const limit = maxLen || 160;
+    const token = (q || '').trim().split(/\s+/).filter(Boolean)[0] || '';
+    let idx = token ? source.toLowerCase().indexOf(token.toLowerCase()) : -1;
+    if (idx < 0) {
+      const cut = source.slice(0, limit);
+      return source.length > limit ? cut.replace(/[,，、\s]+$/, '') + '…' : source;
+    }
+    let start = Math.max(0, idx - 36);
+    // prefer a nearby sentence boundary
+    const before = source.lastIndexOf('。', idx);
+    if (before >= 0 && idx - before < 80 && idx - before > 4) start = before + 1;
+    while (start < source.length && /\s/.test(source[start])) start += 1;
+    let end = Math.min(source.length, start + limit);
+    const after = source.indexOf('。', idx);
+    if (after >= 0 && after + 1 - start <= limit + 20 && after + 1 > end) {
+      end = after + 1;
+    }
+    let snip = source.slice(start, end).trim();
+    if (start > 0) snip = '…' + snip;
+    if (end < source.length) snip = snip + '…';
+    return snip;
+  }
+
+  function cardHref(book, kind, item) {
+    const meta = KIND_META[kind] || KIND_META.concept;
+    const id = (item && (item.id || item.name)) || '';
+    return 'book.html?id=' + encodeURIComponent(book.id) + '#' + meta.hashPrefix + encodeURIComponent(id);
+  }
+
   function setupNav() {
     const btn = document.querySelector('[data-nav-toggle]');
     const links = document.querySelector('[data-nav-links]');
@@ -188,62 +275,78 @@
       </div>`;
   }
 
-  function searchBooks(books, q) {
+  function searchLibrary(books, passages, q) {
     const query = (q || '').trim().toLowerCase();
     if (!query) return [];
     const tokens = query.split(/\s+/).filter(Boolean);
-    const hits = [];
+    const cardHits = [];
+    const bookHits = [];
+    const cardChapters = new Set();
 
     books.forEach(book => {
-      const hayBook = [book.title, book.author, book.summary, book.type].join(' ').toLowerCase();
-      const bookMatch = tokens.every(t => hayBook.includes(t));
-      if (bookMatch) {
-        hits.push({
+      const hayBook = [book.title, book.author].join(' ').toLowerCase();
+      if (tokens.every(t => hayBook.includes(t))) {
+        bookHits.push({
           kind: 'book',
           book,
+          bookTitle: book.title,
           title: book.title,
           snippet: book.summary,
-          href: 'book.html?id=' + encodeURIComponent(book.id)
+          href: 'book.html?id=' + encodeURIComponent(book.id),
+          sourceUrl: primarySource(book)
         });
       }
-      (book.concepts || []).forEach(c => {
-        const hay = [c.name, c.blurb, book.title].join(' ').toLowerCase();
-        if (tokens.every(t => hay.includes(t))) {
-          hits.push({
-            kind: 'concept',
+      [['concept', book.concepts], ['method', book.methods], ['model', book.models]].forEach(([kind, items]) => {
+        (items || []).forEach(item => {
+          const hay = [item.name, asExcerpt(item.blurb)].join(' ').toLowerCase();
+          if (!tokens.every(t => hay.includes(t))) return;
+          const sourceUrl = itemSourceUrl(book, item);
+          cardHits.push({
+            kind,
             book,
-            title: c.name,
-            snippet: asExcerpt(c.blurb) + ' · 《' + book.title + '》',
-            href: 'book.html?id=' + encodeURIComponent(book.id) + '#concepts'
+            bookTitle: book.title,
+            title: item.name,
+            snippet: asExcerpt(item.blurb),
+            href: cardHref(book, kind, item),
+            sourceUrl
           });
-        }
-      });
-      (book.methods || []).forEach(m => {
-        const hay = [m.name, m.blurb, book.title].join(' ').toLowerCase();
-        if (tokens.every(t => hay.includes(t))) {
-          hits.push({
-            kind: 'method',
-            book,
-            title: m.name,
-            snippet: m.blurb + ' · 《' + book.title + '》',
-            href: 'book.html?id=' + encodeURIComponent(book.id) + '#methods'
-          });
-        }
-      });
-      (book.models || []).forEach(m => {
-        const hay = [m.name, m.blurb, book.title].join(' ').toLowerCase();
-        if (tokens.every(t => hay.includes(t))) {
-          hits.push({
-            kind: 'model',
-            book,
-            title: m.name,
-            snippet: m.blurb + ' · 《' + book.title + '》',
-            href: 'book.html?id=' + encodeURIComponent(book.id) + '#models'
-          });
-        }
+          const key = chapterKey(sourceUrl);
+          if (key) cardChapters.add(key);
+        });
       });
     });
-    return hits;
+
+    const passageHits = [];
+    const seenPassage = new Set();
+    (passages || []).forEach(p => {
+      const hay = [p.heading, p.text, p.snippet].join(' ').toLowerCase();
+      if (!tokens.every(t => hay.includes(t))) return;
+      const url = p.url || '';
+      const chap = chapterKey(url);
+      if (chap && cardChapters.has(chap)) return;
+      const dedupe = (p.bookId || '') + '|' + (url || p.heading || '');
+      if (seenPassage.has(dedupe)) return;
+      seenPassage.add(dedupe);
+      passageHits.push({
+        kind: 'passage',
+        bookId: p.bookId,
+        bookTitle: p.bookTitle,
+        title: p.heading || p.bookTitle || '原文',
+        snippet: excerptAround(p.text || p.snippet, q, 160),
+        href: url,
+        sourceUrl: url,
+        bookHref: p.bookId ? 'book.html?id=' + encodeURIComponent(p.bookId) : ''
+      });
+    });
+
+    // Common words like「时间」can hit hundreds of excerpts; keep the list usable.
+    const PASSAGE_LIMIT = 40;
+    return cardHits.concat(passageHits.slice(0, PASSAGE_LIMIT), bookHits);
+  }
+
+  // Back-compat alias used by any leftover call sites
+  function searchBooks(books, q) {
+    return searchLibrary(books, [], q);
   }
 
   function renderResults(hits, q, mount, meta) {
@@ -254,17 +357,32 @@
     }
     meta.textContent = hits.length ? `找到 ${hits.length} 条与「${q}」相关的结果` : `没有找到与「${q}」相关的结果`;
     if (!hits.length) {
-      mount.innerHTML = '<div class="empty-state">试试书名，或概念关键词，例如「时间」「定投」「原则」</div>';
+      mount.innerHTML = '<div class="empty-state">试试概念、原话或书名，例如「财富」「时间」「定投」</div>';
       return;
     }
-    const kindLabel = { book: '书目', concept: '概念', method: '方法论', model: '模型' };
-    mount.innerHTML = hits.map(h => `
+    const kindLabel = { book: '书目', concept: '概念', method: '方法论', model: '模型', passage: '原文' };
+    mount.innerHTML = hits.map(h => {
+      const bookTitle = h.bookTitle || (h.book && h.book.title) || '';
+      const metaLine = (kindLabel[h.kind] || '') + (bookTitle ? ' · 《' + escapeHtml(bookTitle) + '》' : '');
+      const contextHref = h.sourceUrl || '';
+      const isExternal = h.kind === 'passage' || (contextHref && contextHref === h.href);
+      const titleAttrs = isExternal && /^https?:/i.test(h.href || '')
+        ? ' target="_blank" rel="noopener"'
+        : '';
+      const context = contextHref
+        ? `<a class="context-link result-context" href="${escapeHtml(contextHref)}" target="_blank" rel="noopener">看上下文 ↗</a>`
+        : '';
+      const secondary = (h.kind === 'passage' && h.bookHref)
+        ? `<a class="result-book-link" href="${escapeHtml(h.bookHref)}">查看本书概念</a>`
+        : '';
+      return `
       <article class="result-item">
-        <div class="meta">${kindLabel[h.kind] || ''} · ${escapeHtml(h.book.type)}</div>
-        <h3><a href="${h.href}">${highlight(h.title, q)}</a></h3>
+        <div class="meta">${metaLine}</div>
+        <h3><a href="${escapeHtml(h.href || '#')}"${titleAttrs}>${highlight(h.title, q)}</a></h3>
         <p class="snippet">${highlight(h.snippet, q)}</p>
-      </article>
-    `).join('');
+        <div class="result-actions">${context}${secondary}</div>
+      </article>`;
+    }).join('');
   }
 
   function itemKey(bookId, kind, idOrName) {
@@ -871,10 +989,11 @@
       const mount = document.querySelector('[data-results]');
       const meta = document.querySelector('[data-results-meta]');
       const hint = document.querySelector('[data-hint]');
+      const passages = await loadPassages();
 
       function run() {
         const q = input.value;
-        const hits = searchBooks(books, q);
+        const hits = searchLibrary(books, passages, q);
         renderResults(hits, q, mount, meta);
         if (hint) hint.hidden = !!q.trim();
       }
