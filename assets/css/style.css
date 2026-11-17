@@ -327,8 +327,37 @@ html:not([data-theme]) .theme-switch [data-theme-choice="day"] {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 999px;
-  padding: .3rem .3rem .3rem 1.05rem;
+  padding: .3rem .3rem .3rem .35rem;
   box-shadow: var(--shadow);
+}
+.search-mode {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface-2);
+}
+.search-mode button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: .82rem;
+  font-weight: 550;
+  letter-spacing: .04em;
+  line-height: 1;
+  min-height: 2.15rem;
+  padding: .4rem .72rem;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.search-mode button:hover { color: var(--text); }
+.search-mode button[aria-checked="true"] {
+  background: var(--text);
+  color: var(--bg);
 }
 .search-box:focus-within {
   border-color: var(--accent);
@@ -415,6 +444,10 @@ html:not([data-theme]) .theme-switch [data-theme-choice="day"] {
   font-size: 1.18rem;
   font-weight: 560;
   line-height: 1.35;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 .result-item h3 a { color: var(--text); text-decoration: none; }
 .result-item h3 a:hover { color: var(--accent); }
@@ -456,6 +489,15 @@ mark {
 }
 .result-book-link { color: var(--muted); font-weight: 450; }
 .result-book-link:hover { color: var(--accent); }
+.result-group { margin: 0 0 1.35rem; }
+.result-group h2 {
+  display: flex;
+  align-items: baseline;
+  gap: .4rem;
+  margin: 0 0 .45rem;
+  font-size: 1.12rem;
+  font-weight: 560;
+}
 .empty-state {
   text-align: center;
   color: var(--muted);
@@ -1172,6 +1214,8 @@ input, textarea { accent-color: var(--accent); }
     padding-right: 0;
   }
   .search-box button { width: 100%; }
+  .search-mode { display: grid; grid-template-columns: 1fr 1fr; }
+  .search-mode button { min-height: 44px; }
 }
 @media (max-width: 380px) {
   .concept-tiles { grid-template-columns: 1fr; }
@@ -1263,6 +1307,55 @@ body.companion-open { overflow: hidden; }
   line-height: 1.65;
 }
 .companion-lead + .companion-lead { margin-top: .15rem; }
+.passage-read { max-width: 38rem; }
+.passage-kicker {
+  margin: 0 0 .35rem;
+  font-family: var(--sans);
+  font-size: .74rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.passage-read h1 {
+  margin: 0 0 .45rem;
+  font-size: clamp(1.7rem, 3vw, 2.25rem);
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.passage-body {
+  margin: 1rem 0 .7rem;
+  padding: 0;
+  border: 0;
+  color: var(--text);
+  font-family: var(--serif-body);
+  font-size: 1.06rem;
+  font-style: normal;
+  line-height: 1.85;
+}
+.passage-note {
+  margin: 0 0 1rem;
+  color: var(--faint);
+  font-family: var(--sans);
+  font-size: .78rem;
+  letter-spacing: .02em;
+}
+.outline-list { list-style: none; margin: .35rem 0 0; padding: 0; }
+.outline-hit {
+  display: flex;
+  align-items: baseline;
+  gap: .45rem;
+  min-height: 44px;
+  padding: .4rem .15rem;
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--text);
+  text-decoration: none;
+  font-family: var(--serif);
+  font-size: .98rem;
+  line-height: 1.45;
+}
+.outline-hit:hover { color: var(--accent); text-decoration: none; }
+.outline-hit.is-current { color: var(--accent); }
+.outline-hit span { color: var(--faint); font-family: var(--sans); font-size: .75rem; font-variant-numeric: tabular-nums; }
 .companion-title {
   margin: .1rem 0 .35rem;
   font-family: var(--serif);
@@ -1504,7 +1597,7 @@ body.companion-open { overflow: hidden; }
   body[data-page="book"] .concept-sheet {
     --side: max(1.25rem, calc((100vw - min(100vw - 2.5rem, var(--detail-max))) / 2));
     right: calc(var(--side) + var(--rail) + var(--rail-gap));
-    width: min(27rem, calc(min(100vw - 2.5rem, var(--detail-max)) - var(--rail) - var(--rail-gap) - 2rem));
+    width: min(23.5rem, calc(min(100vw - 2.5rem, var(--detail-max)) - var(--rail) - var(--rail-gap) - 2.5rem));
   }
   body[data-page="book"] .concept-sheet:not(.is-open) {
     transform: translateX(calc(100% + var(--side) + var(--rail) + var(--rail-gap) + 1rem));

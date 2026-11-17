@@ -63,6 +63,27 @@
     }
   ];
 
+  const PASSAGE_RECAP_TYPES = [
+    {
+      id: 'understand',
+      chip: '理解',
+      label: '我对这段的理解',
+      placeholder: '这段里，我真正弄懂的是…'
+    },
+    {
+      id: 'curious',
+      chip: '好奇',
+      label: '我还好奇的',
+      placeholder: '顺着这段，我还想问的是…'
+    },
+    {
+      id: 'practice',
+      chip: '践行',
+      label: '我准备践行的',
+      placeholder: '我准备为此做的一件事是…'
+    }
+  ];
+
 
   function chipClass(type) {
     if (type === '公众号') return 'chip chip-wechat';
@@ -149,7 +170,12 @@
   }
 
   function setUser(user) {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    try {
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   function highlight(text, q) {
@@ -209,6 +235,29 @@
       console.warn('passage index unavailable', err);
       return [];
     }
+  }
+
+  function passageStableId(p) {
+    let rel = String((p && p.url) || '');
+    const base = 'https://lixiaolai.com/books/';
+    if (rel.indexOf(base) === 0) rel = rel.slice(base.length);
+    const text = String((p && p.text) || '').replace(/\s+/g, ' ').trim().slice(0, 32);
+    return rel + '\n' + ((p && p.heading) || '') + '\n' + text;
+  }
+
+  function passageHref(p) {
+    return 'book.html?id=' + encodeURIComponent(p.bookId || '') + '&p=' + encodeURIComponent(passageStableId(p));
+  }
+
+  function findPassage(passages, bookId, id) {
+    if (!id) return null;
+    return (passages || []).find(p => p.bookId === bookId && passageStableId(p) === id) || null;
+  }
+
+  function clipPlain(text, max) {
+    const source = String(text || '').replace(/\s+/g, ' ').trim();
+    if (source.length <= max) return source;
+    return source.slice(0, max).replace(/[，,、\s]+$/, '') + '…';
   }
 
   function chapterKey(url) {
@@ -338,7 +387,6 @@
     const tokens = query.split(/\s+/).filter(Boolean);
     const cardHits = [];
     const bookHits = [];
-    const cardChapters = new Set();
 
     books.forEach(book => {
       const hayBook = [book.title, book.author].join(' ').toLowerCase();
@@ -367,38 +415,40 @@
             href: cardHref(book, kind, item),
             sourceUrl
           });
-          const key = chapterKey(sourceUrl);
-          if (key) cardChapters.add(key);
         });
       });
     });
 
-    const passageHits = [];
-    const seenPassage = new Set();
-    (passages || []).forEach(p => {
-      const hay = [p.heading, p.text, p.snippet].join(' ').toLowerCase();
-      if (!tokens.every(t => hay.includes(t))) return;
-      const url = p.url || '';
-      const chap = chapterKey(url);
-      if (chap && cardChapters.has(chap)) return;
-      const dedupe = (p.bookId || '') + '|' + (url || p.heading || '');
-      if (seenPassage.has(dedupe)) return;
-      seenPassage.add(dedupe);
-      passageHits.push({
-        kind: 'passage',
-        bookId: p.bookId,
-        bookTitle: p.bookTitle,
-        title: p.heading || p.bookTitle || '原文',
-        snippet: excerptAround(p.text || p.snippet, q, 160),
-        href: url,
-        sourceUrl: url,
-        bookHref: p.bookId ? 'book.html?id=' + encodeURIComponent(p.bookId) : ''
-      });
-    });
+    return cardHits.concat(bookHits);
+  }
 
-    // Common words like「时间」can hit hundreds of excerpts; keep the list usable.
-    const PASSAGE_LIMIT = 40;
-    return cardHits.concat(passageHits.slice(0, PASSAGE_LIMIT), bookHits);
+  function searchCuriosity(passages, q) {
+    const query = (q || '').trim().toLowerCase();
+    if (!query) return [];
+    const tokens = query.split(/\s+/).filter(Boolean);
+    const ranked = [];
+    const seen = new Set();
+    (passages || []).forEach(p => {
+      const heading = String(p.heading || '').toLowerCase();
+      const text = String(p.text || '').toLowerCase();
+      if (!tokens.every(t => heading.includes(t) || text.includes(t))) return;
+      const section = (p.bookId || '') + '|' + (p.url || '');
+      if (seen.has(section)) return;
+      seen.add(section);
+      const inHead = tokens.every(t => heading.includes(t));
+      ranked.push({ p, score: inHead ? 10 : 1 });
+    });
+    ranked.sort((a, b) => b.score - a.score);
+    return ranked.map(({ p, score }) => ({
+      kind: 'passage',
+      bookId: p.bookId,
+      bookTitle: p.bookTitle,
+      title: p.heading || p.bookTitle || '原文',
+      snippet: excerptAround(p.text || p.snippet, q, 140),
+      href: passageHref(p),
+      sourceUrl: p.url || '',
+      score
+    }));
   }
 
   // Back-compat alias used by any leftover call sites
@@ -414,32 +464,76 @@
     }
     meta.textContent = hits.length ? `找到 ${hits.length} 条与「${q}」相关的结果` : `没有找到与「${q}」相关的结果`;
     if (!hits.length) {
-      mount.innerHTML = '<div class="empty-state">试试概念、原话或书名，例如「财富」「时间」「定投」</div>';
+      mount.innerHTML = '<div class="empty-state">试试概念或书名，例如「财富」「定投」。</div>';
       return;
     }
+    mount.innerHTML = hits.map(h => renderHit(h, q)).join('');
+  }
+
+  function renderHit(h, q) {
+    const bookTitle = h.bookTitle || (h.book && h.book.title) || '';
     const kindLabel = { book: '书目', concept: '概念', method: '方法论', model: '模型', passage: '原文' };
-    mount.innerHTML = hits.map(h => {
-      const bookTitle = h.bookTitle || (h.book && h.book.title) || '';
-      const metaLine = (kindLabel[h.kind] || '') + (bookTitle ? ' · 《' + escapeHtml(bookTitle) + '》' : '');
-      const contextHref = h.sourceUrl || '';
-      const isExternal = h.kind === 'passage' || (contextHref && contextHref === h.href);
-      const titleAttrs = isExternal && /^https?:/i.test(h.href || '')
-        ? ' target="_blank" rel="noopener"'
-        : '';
-      const context = contextHref
-        ? `<a class="context-link result-context" href="${escapeHtml(contextHref)}" target="_blank" rel="noopener">看上下文 ↗</a>`
-        : '';
-      const secondary = (h.kind === 'passage' && h.bookHref)
-        ? `<a class="result-book-link" href="${escapeHtml(h.bookHref)}">查看本书概念</a>`
-        : '';
-      return `
+    const metaLine = (kindLabel[h.kind] || '') + (bookTitle ? ' · 《' + escapeHtml(bookTitle) + '》' : '');
+    const contextHref = h.sourceUrl || '';
+    const externalTitle = h.kind === 'passage' && /^https?:/i.test(h.href || '');
+    const titleAttrs = externalTitle ? ' target="_blank" rel="noopener"' : '';
+    const context = contextHref
+      ? `<a class="context-link result-context" href="${escapeHtml(contextHref)}" target="_blank" rel="noopener">看上下文 ↗</a>`
+      : '';
+    const secondary = (h.kind === 'passage' && h.bookHref)
+      ? `<a class="result-book-link" href="${escapeHtml(h.bookHref)}">查看本书概念</a>`
+      : '';
+    return `
       <article class="result-item">
         <div class="meta">${metaLine}</div>
         <h3><a href="${escapeHtml(h.href || '#')}"${titleAttrs}>${highlight(h.title, q)}</a></h3>
         <p class="snippet">${highlight(h.snippet, q)}</p>
         <div class="result-actions">${context}${secondary}</div>
       </article>`;
+  }
+
+  function renderCuriosity(hits, q, mount, meta) {
+    const query = (q || '').trim();
+    if (!query) {
+      meta.textContent = '';
+      mount.innerHTML = '';
+      return;
+    }
+    if (!hits.length) {
+      meta.textContent = '公开原文里没有对上「' + query + '」';
+      mount.innerHTML = '<div class="empty-state">版权书没有收录正文。可以改搜概念，或把词说得再具体一点。</div>';
+      return;
+    }
+    const byBook = new Map();
+    hits.forEach(hit => {
+      const name = hit.bookTitle || '原文';
+      if (!byBook.has(name)) byBook.set(name, []);
+      byBook.get(name).push(hit);
+    });
+    const groups = [...byBook.entries()].sort((a, b) => {
+      const score = items => items.reduce((n, hit) => n + (hit.score || 0), 0);
+      return score(b[1]) - score(a[1]) || b[1].length - a[1].length;
+    });
+    const shownGroups = groups.slice(0, 6);
+    let shown = 0;
+    const html = shownGroups.map(([title, items]) => {
+      const slice = items.slice(0, 3);
+      shown += slice.length;
+      const more = items.length > slice.length
+        ? `<p class="companion-lead">这一本还有 ${items.length - slice.length} 处，没有全部展开。</p>`
+        : '';
+      return `
+        <section class="result-group">
+          <h2>${escapeHtml(title)} <span class="count-pill">${items.length}</span></h2>
+          ${slice.map(hit => renderHit(hit, query)).join('')}
+          ${more}
+        </section>`;
     }).join('');
+    const rest = hits.length - shown;
+    meta.textContent = rest > 0
+      ? '公开原文里有 ' + hits.length + ' 处小节提到「' + query + '」，这里先列出 ' + shown + ' 处'
+      : '公开原文里有 ' + hits.length + ' 处小节提到「' + query + '」';
+    mount.innerHTML = html;
   }
 
   function itemKey(bookId, kind, idOrName) {
@@ -455,9 +549,14 @@
   }
 
   function saveLocalNote(key, note) {
-    const list = loadLocalNotes(key);
-    list.unshift(note);
-    localStorage.setItem(key, JSON.stringify(list.slice(0, 50)));
+    try {
+      const list = loadLocalNotes(key);
+      list.unshift(note);
+      localStorage.setItem(key, JSON.stringify(list.slice(0, 50)));
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   function practiceMeta(typeId, kind) {
@@ -755,7 +854,10 @@
             round,
             at: nowIso()
           };
-          saveLocalNote(key, note);
+          if (saveLocalNote(key, note) === false) {
+            alert('这台设备现在存不下笔记。');
+            return;
+          }
           const list = loadLocalNotes(key);
           host.querySelector('[data-panel-thread]').innerHTML = renderNoteList(list, kind);
           document.dispatchEvent(new CustomEvent('concept-lib:notes', {
@@ -1056,17 +1158,25 @@
     });
   }
 
-  function mountCompanion(book) {
+  function mountCompanion(book, focus) {
     const slot = document.querySelector('[data-companion-slot]');
     if (!slot) return { setPassages() {} };
+    const focusPassage = (focus && focus.passage) || null;
 
     const COMPANION_STOP = new Set(['的', '了', '是', '在', '和', '与', '或', '及', '把', '被', '对', '从', '为', '以', '而', '也', '就', '都', '这', '那', '一个', '一种', '可以', '我们', '自己', '什么', '如何', '以及', '其中', '这个', '核心', '方法', '概念', '必须', '不是', '就是', '作者', '主张', '待核验']);
     const bookRecapKey = 'recap:' + book.id;
     const mq = window.matchMedia('(max-width: 1239px)');
-    let passages = [];
-    let passagesReady = false;
+    let passages = (focus && focus.passages) || [];
+    let passagesReady = !!(focus && focus.passages);
     let selection = null;
-    let currentTab = 'map';
+    let currentTab = focusPassage ? 'read' : 'map';
+
+    function recapKey() {
+      return focusPassage ? ('prec:' + passageStableId(focusPassage)) : bookRecapKey;
+    }
+    function recapTypes() {
+      return focusPassage ? PASSAGE_RECAP_TYPES : BOOK_RECAP_TYPES;
+    }
 
     slot.innerHTML = `
       <aside class="companion" data-companion aria-label="陪读">
@@ -1219,11 +1329,7 @@
       syncExpanded();
     }
 
-    function selectTab(name) {
-      if (mq.matches && name === currentTab && root.classList.contains('is-open')) {
-        closeSheet();
-        return;
-      }
+    function applyTab(name, openMobile) {
       currentTab = name;
       root.querySelectorAll('[data-tab]').forEach(tab => {
         const on = tab.getAttribute('data-tab') === name;
@@ -1237,8 +1343,16 @@
         const dot = root.querySelector('[data-tab-dot="read"]');
         if (dot) dot.hidden = true;
       }
-      if (mq.matches) openSheet();
+      if (openMobile && mq.matches) openSheet();
       syncExpanded();
+    }
+
+    function selectTab(name) {
+      if (mq.matches && name === currentTab && root.classList.contains('is-open')) {
+        closeSheet();
+        return;
+      }
+      applyTab(name, true);
     }
 
     function paintCurrent() {
@@ -1355,19 +1469,113 @@
       paintCurrent();
     }
 
-    function relatedBlock(title, id, rows, empty) {
-      const list = rows.length
-        ? `<div class="related-list">${rows.map(row => `
+    function relatedBlock(title, id, rows) {
+      if (!rows.length) return '';
+      const list = `<div class="related-list">${rows.map(row => `
             <button type="button" class="related-hit" data-related-open="${escapeHtml(row.item.id || row.item.name)}" data-item-kind="${row.kind}">
               <span class="related-index">${String(row.index + 1).padStart(2, '0')}</span>
               <span class="related-name">${escapeHtml(row.item.name)}</span>
-            </button>`).join('')}</div>`
-        : `<p class="companion-lead">${empty}</p>`;
+            </button>`).join('')}</div>`;
       return `<section class="companion-section" id="${id}"><h3>${title}</h3>${list}</section>`;
+    }
+
+    function cardsForPassage(passage) {
+      const chap = chapterKey(passage.url);
+      const hay = (passage.heading || '') + '\n' + (passage.text || '');
+      const rows = [];
+      ['concept', 'method', 'model'].forEach(kind => {
+        (book[KIND_META[kind].section] || []).forEach((item, index) => {
+          const same = !!(item.sourceUrl && chap && chapterKey(item.sourceUrl) === chap);
+          const keys = itemKeywords(item.name).filter(key => key.length >= 3);
+          const named = keys.some(key => hay.includes(key));
+          const score = (same ? 5 : 0) + (named ? 3 : 0);
+          if (score < 3) return;
+          rows.push({ kind, item, index, score });
+        });
+      });
+      rows.sort((a, b) => b.score - a.score);
+      return rows.slice(0, 4);
+    }
+
+    function shortHead(heading) {
+      const text = String(heading || '').replace(/\s+/g, ' ').trim();
+      return text.length > 42 ? text.slice(0, 42) + '…' : text;
+    }
+
+    function renderPassageCompanion() {
+      const panel = root.querySelector('[data-panel="read"]');
+      const current = focusPassage;
+      const chap = chapterKey(current.url);
+      const chapter = passages.filter(p => p.bookId === book.id && chapterKey(p.url) === chap);
+      const headings = [];
+      const seenHead = new Set();
+      chapter.forEach(p => {
+        const head = p.heading || '';
+        if (!head || seenHead.has(head)) return;
+        seenHead.add(head);
+        headings.push(p);
+      });
+      const allHeads = headings.length > 1 ? headings : [];
+      let outline = allHeads;
+      let omitted = 0;
+      if (allHeads.length > 10) {
+        const at = allHeads.findIndex(p => passageStableId(p) === passageStableId(current));
+        const start = Math.max(0, (at < 0 ? 0 : at) - 2);
+        outline = allHeads.slice(start, start + 8);
+        omitted = allHeads.length - outline.length;
+      }
+      const selfId = passageStableId(current);
+      const nearby = passages.filter(p => p.url === current.url && passageStableId(p) !== selfId).slice(0, 2);
+      const related = cardsForPassage(current);
+      const outlineHtml = outline.length
+        ? `<ol class="outline-list">${outline.map(p => {
+            const on = passageStableId(p) === selfId;
+            const num = String(allHeads.indexOf(p) + 1).padStart(2, '0');
+            return `<li><a class="outline-hit${on ? ' is-current' : ''}" href="${escapeHtml(passageHref(p))}"><span>${num}</span>${escapeHtml(shortHead(p.heading))}</a></li>`;
+          }).join('')}</ol>${omitted ? `<p class="companion-lead">这一章还有 ${omitted} 个小标题，没有全部展开。</p>` : ''}`
+        : '<p class="companion-lead">这一节的公开短摘里，没有再分出小标题。</p>';
+      const nearbyHtml = nearby.length
+        ? nearby.map(p => `
+            <article class="passage-card">
+              <p>${escapeHtml(excerptAround(p.text, '', 110))}</p>
+              <a class="context-link" href="${escapeHtml(passageHref(p))}">同节另一段</a>
+            </article>`).join('')
+        : '';
+      const relatedHtml = related.length
+        ? relatedBlock('对上的卡片', 'passage-cards', related)
+        : '<p class="companion-lead" id="passage-cards">同书的卡片里，没有和这段对上的。</p>';
+      panel.innerHTML = `
+        <p class="companion-kicker">这段原文</p>
+        <h3 class="companion-title">${escapeHtml(shortHead(current.heading || '原文'))}</h3>
+        <section class="companion-section">
+          <div class="panel-section-label-row">
+            <span class="panel-section-label">本节摘录</span>
+            ${current.url ? `<a class="context-link" href="${escapeHtml(current.url)}" target="_blank" rel="noopener">看上下文</a>` : ''}
+          </div>
+          <blockquote class="panel-excerpt">${escapeHtml(clipPlain(current.text, 140) || '（这段没有可用的短摘）')}</blockquote>
+        </section>
+        <div class="quick-actions">
+          <button type="button" class="quick-action" data-qa="outline">章节脉络</button>
+          ${current.url
+            ? `<a class="quick-action" href="${escapeHtml(current.url)}" target="_blank" rel="noopener">看原文上下文</a>`
+            : '<button type="button" class="quick-action" disabled>看原文上下文</button>'}
+          <button type="button" class="quick-action" data-qa="cards" ${related.length ? '' : 'disabled'}>相关卡片</button>
+        </div>
+        <section class="companion-section" id="passage-outline">
+          <h3>章节脉络</h3>
+          <p class="companion-lead">小标题来自原文，不是另写的提纲。</p>
+          ${outlineHtml}
+        </section>
+        ${nearbyHtml ? `<section class="companion-section"><h3>同节的其他短摘</h3>${nearbyHtml}</section>` : ''}
+        ${relatedHtml}`;
     }
 
     function renderRead() {
       const panel = root.querySelector('[data-panel="read"]');
+      if (focusPassage) {
+        renderPassageCompanion();
+        return;
+      }
       if (!selection) {
         panel.innerHTML = '<p class="companion-lead">打开一张卡片之后，这里放上它的意思、同书相关的卡片，以及能对上的原文。</p>';
         return;
@@ -1413,15 +1621,13 @@
           <blockquote class="panel-excerpt">${escapeHtml(asExcerpt(item.blurb) || '（这张卡片还没有整理出意思）')}</blockquote>
         </section>
         <div class="quick-actions">
-          <button type="button" class="quick-action" data-qa="concepts">本页相关概念</button>
+          <button type="button" class="quick-action" data-qa="concepts" ${concepts.length ? '' : 'disabled'}>本页相关概念</button>
           ${src
             ? `<a class="quick-action" href="${escapeHtml(src)}" target="_blank" rel="noopener">看原文上下文</a>`
             : '<button type="button" class="quick-action" disabled>看原文上下文</button>'}
-          <button type="button" class="quick-action" data-qa="methods">相关方法论</button>
+          <button type="button" class="quick-action" data-qa="methods" ${methods.length ? '' : 'disabled'}>相关方法论</button>
         </div>
-        ${relatedBlock('相关概念', 'companion-related-concepts', concepts, '同书里没有抽出直接相关的概念。')}
-        ${relatedBlock('相关方法论', 'companion-related-methods', methods, '同书里没有抽出直接相关的方法。')}
-        ${models.length ? relatedBlock('相关模型', 'companion-related-models', models, '') : ''}
+        ${[relatedBlock('相关概念', 'companion-related-concepts', concepts), relatedBlock('相关方法论', 'companion-related-methods', methods), relatedBlock('相关模型', 'companion-related-models', models)].join('') || '<p class="companion-lead">同书的卡片里，没有和这里直接对上的。</p>'}
         <section class="companion-section" id="companion-passages">
           <h3>原文</h3>
           ${passagesHtml}
@@ -1436,7 +1642,11 @@
           const fd = new FormData(reg);
           const nickname = String(fd.get('nickname') || '').trim();
           if (!nickname) return;
-          setUser({ nickname, kaijiang: !!fd.get('kaijiang') });
+          if (setUser({ nickname, kaijiang: !!fd.get('kaijiang') }) === false) {
+            const warn = root.querySelector('[data-storage-note]');
+            if (warn) warn.hidden = false;
+            return;
+          }
           document.dispatchEvent(new CustomEvent('concept-lib:user'));
         });
       }
@@ -1482,7 +1692,7 @@
           return;
         }
         const practiceType = String(fd.get('practiceType') || types[0].id);
-        saveLocalNote(opts.key, {
+        const saved = saveLocalNote(opts.key, {
           name: user.nickname,
           body,
           practiceType,
@@ -1490,6 +1700,11 @@
           round,
           at: nowIso()
         });
+        if (saved === false) {
+          const warn = root.querySelector('[data-storage-note]');
+          if (warn) warn.hidden = false;
+          return;
+        }
         form.reset();
         const kept = byId[practiceType] || practiceMeta(practiceType, opts.kind);
         if (typeInput) typeInput.value = kept.id;
@@ -1509,7 +1724,7 @@
     function paintBookNotes() {
       const el = root.querySelector('[data-book-notes]');
       if (!el) return;
-      const notes = loadLocalNotes(bookRecapKey);
+      const notes = loadLocalNotes(recapKey());
       el.innerHTML = notes.length ? notes.map(note => renderNoteCard(note, 'concept')).join('') : '';
     }
 
@@ -1611,28 +1826,45 @@
         return;
       }
       write.innerHTML = renderInterpretForm(user, 'concept', {
-        types: BOOK_RECAP_TYPES,
+        types: recapTypes(),
         intro: false,
-        chipLabel: '这本书的理解、好奇或践行'
+        chipLabel: focusPassage ? '这段原文的理解、好奇或践行' : '这本书的理解、好奇或践行'
       });
       const form = write.querySelector('[data-interpret-form]');
       if (form) {
         bindInterpretForm(form, {
           kind: 'concept',
-          key: bookRecapKey,
+          key: recapKey(),
           id: '',
-          types: BOOK_RECAP_TYPES
+          types: recapTypes()
         });
       }
     }
 
     function renderRecap() {
       const panel = root.querySelector('[data-panel="recap"]');
+      if (focusPassage) {
+        panel.innerHTML = `
+          <div class="recap-block">
+            <p class="companion-kicker">写在这段上</p>
+            <h3 class="companion-title">${escapeHtml(shortHead(focusPassage.heading || '这段原文'))}</h3>
+            <p class="companion-lead">《${escapeHtml(book.title)}》</p>
+            <p class="companion-lead">理解、好奇、践行。只留在这台设备里，换一段不会盖掉这一段。</p>
+            <p class="companion-lead" data-storage-note hidden>这台设备现在存不下笔记。</p>
+            <div data-recap-auth></div>
+            <div data-recap-book-write></div>
+            <div class="recap-notes" data-book-notes></div>
+          </div>`;
+        paintAuth();
+        paintBookNotes();
+        return;
+      }
       panel.innerHTML = `
         <div class="recap-block">
           <p class="companion-kicker">合上之前</p>
           <h3 class="companion-title">留给自己的三句话</h3>
           <p class="companion-lead">理解、好奇、践行。写在这台设备上，可以一条条追加。</p>
+          <p class="companion-lead" data-storage-note hidden>这台设备现在存不下笔记。</p>
           <div data-recap-auth></div>
           <div data-recap-book-write></div>
           <div class="recap-notes" data-book-notes></div>
@@ -1660,7 +1892,8 @@
     renderMap();
     renderRead();
     renderRecap();
-    if (mq.matches) sheet.inert = true;
+    if (focusPassage) applyTab('read', false);
+    if (mq.matches) sheet.inert = !root.classList.contains('is-open');
     syncExpanded();
 
     root.querySelector('[data-companion-close]').addEventListener('click', closeSheet);
@@ -1702,7 +1935,11 @@
         const which = action.getAttribute('data-qa');
         const target = which === 'methods'
           ? root.querySelector('#companion-related-methods')
-          : root.querySelector('#companion-related-concepts');
+          : which === 'outline'
+            ? root.querySelector('#passage-outline')
+            : which === 'cards'
+              ? root.querySelector('#passage-cards')
+              : root.querySelector('#companion-related-concepts');
         scrollPanelTo(target);
       }
     });
@@ -1741,7 +1978,7 @@
     });
     document.addEventListener('concept-lib:notes', (e) => {
       const detail = e.detail || {};
-      if (detail.key === bookRecapKey) paintBookNotes();
+      if (detail.key === bookRecapKey || detail.key === recapKey()) paintBookNotes();
       if (detail.kind && detail.id) {
         paintTileCount(detail.kind, detail.id);
         paintMapCount(detail.kind, detail.id);
@@ -1780,21 +2017,70 @@
       const mount = document.querySelector('[data-results]');
       const meta = document.querySelector('[data-results-meta]');
       const hint = document.querySelector('[data-hint]');
+      const modeButtons = Array.from(document.querySelectorAll('[data-search-mode]'));
+      const lead = document.querySelector('.hint-lead');
+      const examples = document.querySelector('.hint-examples');
+      let mode = qs('mode') === 'curiosity' ? 'curiosity' : 'card';
       const passages = await loadPassages();
+
+      function paintMode() {
+        modeButtons.forEach(button => {
+          const on = button.getAttribute('data-search-mode') === mode;
+          button.setAttribute('aria-checked', on ? 'true' : 'false');
+          button.tabIndex = on ? 0 : -1;
+        });
+        if (lead && examples) {
+          if (mode === 'curiosity') {
+            lead.textContent = '搜一个好奇点，';
+            examples.textContent = '例如：时间、财富';
+          } else {
+            lead.textContent = '搜索概念、方法论，';
+            examples.textContent = '例如：财富、时间、定投';
+          }
+        }
+      }
+
+      function remember(q) {
+        const url = new URL(location.href);
+        const text = (q || '').trim();
+        if (text) url.searchParams.set('q', text);
+        else url.searchParams.delete('q');
+        url.searchParams.set('mode', mode);
+        history.replaceState(null, '', url.pathname + url.search);
+      }
 
       function run() {
         const q = input.value;
-        const hits = searchLibrary(books, passages, q);
-        renderResults(hits, q, mount, meta);
+        if (mode === 'curiosity') renderCuriosity(searchCuriosity(passages, q), q, mount, meta);
+        else renderResults(searchLibrary(books, [], q), q, mount, meta);
         if (hint) hint.hidden = !!q.trim();
+        remember(q);
       }
 
+      paintMode();
       btn.addEventListener('click', run);
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
           run();
         }
+      });
+      modeButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+          mode = button.getAttribute('data-search-mode') === 'curiosity' ? 'curiosity' : 'card';
+          paintMode();
+          if (input.value.trim()) run();
+          else remember('');
+        });
+        button.addEventListener('keydown', (e) => {
+          const forward = e.key === 'ArrowRight' || e.key === 'ArrowDown';
+          const back = e.key === 'ArrowLeft' || e.key === 'ArrowUp';
+          if (!forward && !back) return;
+          e.preventDefault();
+          const next = modeButtons[(index + (forward ? 1 : -1) + modeButtons.length) % modeButtons.length];
+          next.focus();
+          next.click();
+        });
       });
       const preset = qs('q');
       if (preset) {
@@ -1823,6 +2109,37 @@
         return;
       }
       document.title = book.title + ' · 概念书库';
+      const passageKey = qs('p');
+      if (passageKey) {
+        const passages = await loadPassages();
+        const passage = findPassage(passages, book.id, passageKey);
+        if (!passage) {
+          mount.innerHTML = `
+            <div class="section">
+              <h2>没有找到这段原文</h2>
+              <p class="placeholder-note">链接可能旧了。可以回<a href="index.html?mode=curiosity">好奇搜索</a>，或看<a href="book.html?id=${encodeURIComponent(book.id)}">这本书的概念</a>。</p>
+            </div>`;
+          mountCompanion(book, { passages });
+          return;
+        }
+        const source = passage.url || primarySource(book);
+        const byline = bookByline(book);
+        mount.innerHTML = `
+          <article class="passage-read">
+            <p class="passage-kicker">原文短摘</p>
+            <h1>${escapeHtml(passage.heading || '原文')}</h1>
+            <p class="meta-line"><a href="book.html?id=${encodeURIComponent(book.id)}">${escapeHtml(book.title)}</a>${byline ? ' · ' + escapeHtml(byline) : ''}</p>
+            <blockquote class="passage-body">${escapeHtml(clipPlain(passage.text, 480) || '（这段没有可用的短摘）')}</blockquote>
+            <p class="passage-note">这是公开短摘，不是这一章的全文。</p>
+            <div class="book-actions">
+              <a class="btn btn-ghost" href="${escapeHtml(source)}" target="_blank" rel="noopener">看上下文</a>
+              <a class="btn btn-ghost" href="book.html?id=${encodeURIComponent(book.id)}">这本书的概念</a>
+            </div>
+          </article>`;
+        document.title = (passage.heading || '原文') + ' · ' + book.title + ' · 概念书库';
+        mountCompanion(book, { passage, passages });
+        return;
+      }
       renderBookDetail(book, mount);
       const companion = mountCompanion(book);
       loadPassages().then(list => companion.setPassages(list));
