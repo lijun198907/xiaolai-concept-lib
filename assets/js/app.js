@@ -42,6 +42,48 @@
     return Object.fromEntries(practiceTypesFor(kind).map(t => [t.id, t]));
   }
 
+  const BOOK_RECAP_TYPES = [
+    {
+      id: 'understand',
+      chip: '理解',
+      label: '我对这本书的理解',
+      placeholder: '这本书里，我真正弄懂的是…'
+    },
+    {
+      id: 'curious',
+      chip: '好奇',
+      label: '我还好奇的',
+      placeholder: '合上之后，我还想继续追问的是…'
+    },
+    {
+      id: 'practice',
+      chip: '践行',
+      label: '我准备践行的',
+      placeholder: '我准备去做的一件事是…'
+    }
+  ];
+
+  const PASSAGE_RECAP_TYPES = [
+    {
+      id: 'understand',
+      chip: '理解',
+      label: '我对这段的理解',
+      placeholder: '这段里，我真正弄懂的是…'
+    },
+    {
+      id: 'curious',
+      chip: '好奇',
+      label: '我还好奇的',
+      placeholder: '顺着这段，我还想问的是…'
+    },
+    {
+      id: 'practice',
+      chip: '践行',
+      label: '我准备践行的',
+      placeholder: '我准备为此做的一件事是…'
+    }
+  ];
+
 
   function chipClass(type) {
     if (type === '公众号') return 'chip chip-wechat';
@@ -128,7 +170,12 @@
   }
 
   function setUser(user) {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    try {
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   function highlight(text, q) {
@@ -188,6 +235,29 @@
       console.warn('passage index unavailable', err);
       return [];
     }
+  }
+
+  function passageStableId(p) {
+    let rel = String((p && p.url) || '');
+    const base = 'https://lixiaolai.com/books/';
+    if (rel.indexOf(base) === 0) rel = rel.slice(base.length);
+    const text = String((p && p.text) || '').replace(/\s+/g, ' ').trim().slice(0, 32);
+    return rel + '\n' + ((p && p.heading) || '') + '\n' + text;
+  }
+
+  function passageHref(p) {
+    return 'book.html?id=' + encodeURIComponent(p.bookId || '') + '&p=' + encodeURIComponent(passageStableId(p));
+  }
+
+  function findPassage(passages, bookId, id) {
+    if (!id) return null;
+    return (passages || []).find(p => p.bookId === bookId && passageStableId(p) === id) || null;
+  }
+
+  function clipPlain(text, max) {
+    const source = String(text || '').replace(/\s+/g, ' ').trim();
+    if (source.length <= max) return source;
+    return source.slice(0, max).replace(/[，,、\s]+$/, '') + '…';
   }
 
   function chapterKey(url) {
@@ -317,7 +387,6 @@
     const tokens = query.split(/\s+/).filter(Boolean);
     const cardHits = [];
     const bookHits = [];
-    const cardChapters = new Set();
 
     books.forEach(book => {
       const hayBook = [book.title, book.author].join(' ').toLowerCase();
@@ -346,38 +415,40 @@
             href: cardHref(book, kind, item),
             sourceUrl
           });
-          const key = chapterKey(sourceUrl);
-          if (key) cardChapters.add(key);
         });
       });
     });
 
-    const passageHits = [];
-    const seenPassage = new Set();
-    (passages || []).forEach(p => {
-      const hay = [p.heading, p.text, p.snippet].join(' ').toLowerCase();
-      if (!tokens.every(t => hay.includes(t))) return;
-      const url = p.url || '';
-      const chap = chapterKey(url);
-      if (chap && cardChapters.has(chap)) return;
-      const dedupe = (p.bookId || '') + '|' + (url || p.heading || '');
-      if (seenPassage.has(dedupe)) return;
-      seenPassage.add(dedupe);
-      passageHits.push({
-        kind: 'passage',
-        bookId: p.bookId,
-        bookTitle: p.bookTitle,
-        title: p.heading || p.bookTitle || '原文',
-        snippet: excerptAround(p.text || p.snippet, q, 160),
-        href: url,
-        sourceUrl: url,
-        bookHref: p.bookId ? 'book.html?id=' + encodeURIComponent(p.bookId) : ''
-      });
-    });
+    return cardHits.concat(bookHits);
+  }
 
-    // Common words like「时间」can hit hundreds of excerpts; keep the list usable.
-    const PASSAGE_LIMIT = 40;
-    return cardHits.concat(passageHits.slice(0, PASSAGE_LIMIT), bookHits);
+  function searchCuriosity(passages, q) {
+    const query = (q || '').trim().toLowerCase();
+    if (!query) return [];
+    const tokens = query.split(/\s+/).filter(Boolean);
+    const ranked = [];
+    const seen = new Set();
+    (passages || []).forEach(p => {
+      const heading = String(p.heading || '').toLowerCase();
+      const text = String(p.text || '').toLowerCase();
+      if (!tokens.every(t => heading.includes(t) || text.includes(t))) return;
+      const section = (p.bookId || '') + '|' + (p.url || '');
+      if (seen.has(section)) return;
+      seen.add(section);
+      const inHead = tokens.every(t => heading.includes(t));
+      ranked.push({ p, score: inHead ? 10 : 1 });
+    });
+    ranked.sort((a, b) => b.score - a.score);
+    return ranked.map(({ p, score }) => ({
+      kind: 'passage',
+      bookId: p.bookId,
+      bookTitle: p.bookTitle,
+      title: p.heading || p.bookTitle || '原文',
+      snippet: excerptAround(p.text || p.snippet, q, 140),
+      href: passageHref(p),
+      sourceUrl: p.url || '',
+      score
+    }));
   }
 
   // Back-compat alias used by any leftover call sites
@@ -393,32 +464,76 @@
     }
     meta.textContent = hits.length ? `找到 ${hits.length} 条与「${q}」相关的结果` : `没有找到与「${q}」相关的结果`;
     if (!hits.length) {
-      mount.innerHTML = '<div class="empty-state">试试概念、原话或书名，例如「财富」「时间」「定投」</div>';
+      mount.innerHTML = '<div class="empty-state">试试概念或书名，例如「财富」「定投」。</div>';
       return;
     }
+    mount.innerHTML = hits.map(h => renderHit(h, q)).join('');
+  }
+
+  function renderHit(h, q) {
+    const bookTitle = h.bookTitle || (h.book && h.book.title) || '';
     const kindLabel = { book: '书目', concept: '概念', method: '方法论', model: '模型', passage: '原文' };
-    mount.innerHTML = hits.map(h => {
-      const bookTitle = h.bookTitle || (h.book && h.book.title) || '';
-      const metaLine = (kindLabel[h.kind] || '') + (bookTitle ? ' · 《' + escapeHtml(bookTitle) + '》' : '');
-      const contextHref = h.sourceUrl || '';
-      const isExternal = h.kind === 'passage' || (contextHref && contextHref === h.href);
-      const titleAttrs = isExternal && /^https?:/i.test(h.href || '')
-        ? ' target="_blank" rel="noopener"'
-        : '';
-      const context = contextHref
-        ? `<a class="context-link result-context" href="${escapeHtml(contextHref)}" target="_blank" rel="noopener">看上下文 ↗</a>`
-        : '';
-      const secondary = (h.kind === 'passage' && h.bookHref)
-        ? `<a class="result-book-link" href="${escapeHtml(h.bookHref)}">查看本书概念</a>`
-        : '';
-      return `
+    const metaLine = (kindLabel[h.kind] || '') + (bookTitle ? ' · 《' + escapeHtml(bookTitle) + '》' : '');
+    const contextHref = h.sourceUrl || '';
+    const externalTitle = h.kind === 'passage' && /^https?:/i.test(h.href || '');
+    const titleAttrs = externalTitle ? ' target="_blank" rel="noopener"' : '';
+    const context = contextHref
+      ? `<a class="context-link result-context" href="${escapeHtml(contextHref)}" target="_blank" rel="noopener">看上下文 ↗</a>`
+      : '';
+    const secondary = (h.kind === 'passage' && h.bookHref)
+      ? `<a class="result-book-link" href="${escapeHtml(h.bookHref)}">查看本书概念</a>`
+      : '';
+    return `
       <article class="result-item">
         <div class="meta">${metaLine}</div>
         <h3><a href="${escapeHtml(h.href || '#')}"${titleAttrs}>${highlight(h.title, q)}</a></h3>
         <p class="snippet">${highlight(h.snippet, q)}</p>
         <div class="result-actions">${context}${secondary}</div>
       </article>`;
+  }
+
+  function renderCuriosity(hits, q, mount, meta) {
+    const query = (q || '').trim();
+    if (!query) {
+      meta.textContent = '';
+      mount.innerHTML = '';
+      return;
+    }
+    if (!hits.length) {
+      meta.textContent = '公开原文里没有对上「' + query + '」';
+      mount.innerHTML = '<div class="empty-state">版权书没有收录正文。可以改搜概念，或把词说得再具体一点。</div>';
+      return;
+    }
+    const byBook = new Map();
+    hits.forEach(hit => {
+      const name = hit.bookTitle || '原文';
+      if (!byBook.has(name)) byBook.set(name, []);
+      byBook.get(name).push(hit);
+    });
+    const groups = [...byBook.entries()].sort((a, b) => {
+      const score = items => items.reduce((n, hit) => n + (hit.score || 0), 0);
+      return score(b[1]) - score(a[1]) || b[1].length - a[1].length;
+    });
+    const shownGroups = groups.slice(0, 6);
+    let shown = 0;
+    const html = shownGroups.map(([title, items]) => {
+      const slice = items.slice(0, 3);
+      shown += slice.length;
+      const more = items.length > slice.length
+        ? `<p class="companion-lead">这一本还有 ${items.length - slice.length} 处，没有全部展开。</p>`
+        : '';
+      return `
+        <section class="result-group">
+          <h2>${escapeHtml(title)} <span class="count-pill">${items.length}</span></h2>
+          ${slice.map(hit => renderHit(hit, query)).join('')}
+          ${more}
+        </section>`;
     }).join('');
+    const rest = hits.length - shown;
+    meta.textContent = rest > 0
+      ? '公开原文里有 ' + hits.length + ' 处小节提到「' + query + '」，这里先列出 ' + shown + ' 处'
+      : '公开原文里有 ' + hits.length + ' 处小节提到「' + query + '」';
+    mount.innerHTML = html;
   }
 
   function itemKey(bookId, kind, idOrName) {
@@ -434,9 +549,14 @@
   }
 
   function saveLocalNote(key, note) {
-    const list = loadLocalNotes(key);
-    list.unshift(note);
-    localStorage.setItem(key, JSON.stringify(list.slice(0, 50)));
+    try {
+      const list = loadLocalNotes(key);
+      list.unshift(note);
+      localStorage.setItem(key, JSON.stringify(list.slice(0, 50)));
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   function practiceMeta(typeId, kind) {
@@ -538,9 +658,10 @@
       </form>`;
   }
 
-  function renderInterpretForm(user, kind) {
+  function renderInterpretForm(user, kind, options) {
     if (!user) return '';
-    const types = practiceTypesFor(kind);
+    const opts = options || {};
+    const types = opts.types || practiceTypesFor(kind);
     const defaultType = types[0];
     const noun = (KIND_META[kind] || KIND_META.concept).noun;
     const chips = types.map((t, i) => `
@@ -555,11 +676,13 @@
         <label class="round-opt"><input type="radio" name="round" value="2"> 第2轮</label>
         <label class="round-opt"><input type="radio" name="round" value="3"> 第3轮</label>
       </div>` : '';
+    const intro = opts.intro === false ? '' : `
+        <p class="panel-section-label">超级践行 · 把${escapeHtml(noun)}内化成自己的</p>
+        <p class="practice-hint">重点不是评论${escapeHtml(noun)}本身，而是把它内化成自己的。选一个方向写下。</p>`;
     return `
       <form class="interpret-form" data-interpret-form>
-        <p class="panel-section-label">超级践行 · 把${escapeHtml(noun)}内化成自己的</p>
-        <p class="practice-hint">重点不是评论${escapeHtml(noun)}本身，而是把它内化成自己的。选一个方向写下。</p>
-        <div class="practice-chips" role="tablist" aria-label="写下方向">${chips}</div>
+        ${intro}
+        <div class="practice-chips" role="tablist" aria-label="${escapeHtml(opts.chipLabel || '写下方向')}">${chips}</div>
         <input type="hidden" name="practiceType" value="${escapeHtml(defaultType.id)}" data-practice-type>
         <p class="practice-prompt" data-practice-prompt>${escapeHtml(defaultType.label)}</p>
         <textarea name="body" rows="4" placeholder="${escapeHtml(defaultType.placeholder)}" required data-practice-body></textarea>
@@ -577,7 +700,13 @@
     return host;
   }
 
+  let panelWriterAbort = null;
+
   function closeItemPanel(kind) {
+    if (panelWriterAbort) {
+      panelWriterAbort.abort();
+      panelWriterAbort = null;
+    }
     const host = document.querySelector('[data-concept-panel-host]');
     if (!host) return;
     const sheet = host.querySelector('.concept-sheet');
@@ -599,6 +728,8 @@
   function openItemPanel(book, kind, item, index) {
     const meta = KIND_META[kind] || KIND_META.concept;
     const host = ensurePanelHost();
+    if (panelWriterAbort) panelWriterAbort.abort();
+    panelWriterAbort = new AbortController();
     const id = item.id || item.name;
     const key = itemKey(book.id, kind, id);
     const notes = loadLocalNotes(key);
@@ -671,6 +802,7 @@
             nickname,
             kaijiang: !!fd.get('kaijiang')
           });
+          document.dispatchEvent(new CustomEvent('concept-lib:user'));
           refreshWrite();
         });
       }
@@ -678,6 +810,7 @@
       if (reset) {
         reset.addEventListener('click', () => {
           localStorage.removeItem(USER_KEY);
+          document.dispatchEvent(new CustomEvent('concept-lib:user'));
           refreshWrite();
         });
       }
@@ -721,9 +854,15 @@
             round,
             at: nowIso()
           };
-          saveLocalNote(key, note);
+          if (saveLocalNote(key, note) === false) {
+            alert('这台设备现在存不下笔记。');
+            return;
+          }
           const list = loadLocalNotes(key);
           host.querySelector('[data-panel-thread]').innerHTML = renderNoteList(list, kind);
+          document.dispatchEvent(new CustomEvent('concept-lib:notes', {
+            detail: { key: key, kind: kind, id: id }
+          }));
           const keepType = practiceType;
           form.reset();
           if (typeInput) typeInput.value = keepType;
@@ -750,6 +889,15 @@
       }
     }
     bindWrite();
+    document.addEventListener('concept-lib:user', refreshWrite, { signal: panelWriterAbort.signal });
+    document.dispatchEvent(new CustomEvent('concept-lib:select', {
+      detail: {
+        bookId: book.id,
+        kind: kind,
+        id: id,
+        index: typeof index === 'number' ? index : -1
+      }
+    }));
   }
 
   function openConceptPanel(book, item, index) {
@@ -885,17 +1033,21 @@
     });
 
     // Hash deep-link: #concept-C01 / #method-M01 / #model-MOD01
-    const hash = location.hash || '';
-    function openFromHash(prefix, kind) {
-      if (!hash.startsWith(prefix)) return false;
-      const cid = decodeURIComponent(hash.slice(prefix.length));
-      const list = itemsForKind(kind);
-      const idx = list.findIndex(c => (c.id || c.name) === cid);
-      const item = idx >= 0 ? list[idx] : null;
-      if (item) setTimeout(() => openItemPanel(book, kind, item, idx), 60);
-      return !!item;
+    function openCurrentHash() {
+      const hash = location.hash || '';
+      function openFromHash(prefix, kind) {
+        if (!hash.startsWith(prefix)) return false;
+        const cid = decodeURIComponent(hash.slice(prefix.length));
+        const list = itemsForKind(kind);
+        const idx = list.findIndex(c => (c.id || c.name) === cid);
+        const item = idx >= 0 ? list[idx] : null;
+        if (item) openItemPanel(book, kind, item, idx);
+        return !!item;
+      }
+      return openFromHash('#concept-', 'concept') || openFromHash('#method-', 'method') || openFromHash('#model-', 'model');
     }
-    openFromHash('#concept-', 'concept') || openFromHash('#method-', 'method') || openFromHash('#model-', 'model');
+    setTimeout(openCurrentHash, 60);
+    window.addEventListener('hashchange', openCurrentHash);
 
     document.addEventListener('keydown', function onEsc(e) {
       if (e.key === 'Escape') closeItemPanel();
@@ -1006,6 +1158,845 @@
     });
   }
 
+  function mountCompanion(book, focus) {
+    const slot = document.querySelector('[data-companion-slot]');
+    if (!slot) return { setPassages() {} };
+    const focusPassage = (focus && focus.passage) || null;
+
+    const COMPANION_STOP = new Set(['的', '了', '是', '在', '和', '与', '或', '及', '把', '被', '对', '从', '为', '以', '而', '也', '就', '都', '这', '那', '一个', '一种', '可以', '我们', '自己', '什么', '如何', '以及', '其中', '这个', '核心', '方法', '概念', '必须', '不是', '就是', '作者', '主张', '待核验']);
+    const bookRecapKey = 'recap:' + book.id;
+    const mq = window.matchMedia('(max-width: 1239px)');
+    let passages = (focus && focus.passages) || [];
+    let passagesReady = !!(focus && focus.passages);
+    let selection = null;
+    let currentTab = focusPassage ? 'read' : 'map';
+
+    function recapKey() {
+      return focusPassage ? ('prec:' + passageStableId(focusPassage)) : bookRecapKey;
+    }
+    function recapTypes() {
+      return focusPassage ? PASSAGE_RECAP_TYPES : BOOK_RECAP_TYPES;
+    }
+
+    slot.innerHTML = `
+      <aside class="companion" data-companion aria-label="陪读">
+        <div class="companion-tabs" role="tablist" aria-label="陪读栏目">
+          <button type="button" class="companion-tab" id="companion-tab-map" role="tab" data-tab="map" aria-controls="companion-panel-map" aria-selected="true">地图</button>
+          <button type="button" class="companion-tab" id="companion-tab-read" role="tab" data-tab="read" aria-controls="companion-panel-read" aria-selected="false" tabindex="-1">伴读<span class="tab-dot" data-tab-dot="read" hidden></span></button>
+          <button type="button" class="companion-tab" id="companion-tab-recap" role="tab" data-tab="recap" aria-controls="companion-panel-recap" aria-selected="false" tabindex="-1">复盘</button>
+        </div>
+        <div class="companion-sheet" data-companion-sheet>
+          <div class="companion-handle">
+            <span class="companion-handle-title">陪读</span>
+            <button type="button" class="companion-close" data-companion-close>收起</button>
+          </div>
+          <div class="companion-panels">
+            <div role="tabpanel" id="companion-panel-map" data-panel="map" aria-labelledby="companion-tab-map"></div>
+            <div role="tabpanel" id="companion-panel-read" data-panel="read" aria-labelledby="companion-tab-read" hidden></div>
+            <div role="tabpanel" id="companion-panel-recap" data-panel="recap" aria-labelledby="companion-tab-recap" hidden></div>
+          </div>
+        </div>
+      </aside>`;
+
+    const root = slot.querySelector('[data-companion]');
+    const sheet = root.querySelector('[data-companion-sheet]');
+    const scrim = document.createElement('div');
+    scrim.className = 'companion-scrim';
+    scrim.hidden = true;
+    scrim.setAttribute('data-companion-scrim', '');
+    document.body.appendChild(scrim);
+
+    function findItem(kind, id) {
+      const meta = KIND_META[kind];
+      if (!meta) return null;
+      const list = book[meta.section] || [];
+      const index = list.findIndex(item => (item.id || item.name) === id);
+      if (index < 0) return null;
+      return { item: list[index], index };
+    }
+
+    function itemKeywords(name) {
+      const parts = String(name || '').split(/[／/、，,：:；;（）()「」“”"'《》·—–\s]+/);
+      const out = [];
+      parts.forEach(raw => {
+        const s = raw.trim();
+        if (s.length < 2 || COMPANION_STOP.has(s)) return;
+        if (/^[\d.§]+$/.test(s)) return;
+        if (/^[A-Za-z0-9]+$/.test(s) && s.length < 4) return;
+        out.push(s);
+      });
+      return [...new Set(out)];
+    }
+
+    function glossOf(blurb) {
+      const text = asExcerpt(blurb);
+      if (!text) return '';
+      const sentence = text.split(/[。！？]/)[0].trim();
+      if (!sentence) return '';
+      return sentence.length > 46 ? sentence.slice(0, 46) + '…' : sentence;
+    }
+
+    function scrollPanelTo(el) {
+      if (!el) return;
+      const scroller = el.closest('.companion-panels');
+      if (!scroller) return;
+      const elRect = el.getBoundingClientRect();
+      const scRect = scroller.getBoundingClientRect();
+      if (elRect.top < scRect.top + 8 || elRect.bottom > scRect.bottom - 8) {
+        scroller.scrollTop += elRect.top - scRect.top - 12;
+      }
+    }
+
+    function passagesFor(item) {
+      const keys = itemKeywords(item.name);
+      const chap = item.sourceUrl ? chapterKey(item.sourceUrl) : '';
+      const ranked = [];
+      passages.forEach(p => {
+        if (p.bookId !== book.id) return;
+        const heading = p.heading || '';
+        const text = p.text || '';
+        const same = !!(chap && chapterKey(p.url) === chap);
+        let score = same ? 8 : 0;
+        let matched = '';
+        keys.forEach(k => {
+          const inHead = heading.includes(k);
+          const inText = text.includes(k);
+          if (!inHead && !inText) return;
+          if (!same && k.length < 4) return;
+          score += (k.length >= 4 ? 4 : 2) + (inHead ? 3 : 0);
+          if (k.length > matched.length) matched = k;
+        });
+        if (!same && !keys.some(k => k.length >= 4 && (heading.includes(k) || text.includes(k)))) score = 0;
+        if (score > 0) ranked.push({ p, score, matched, same });
+      });
+      ranked.sort((a, b) => b.score - a.score);
+      const seen = new Set();
+      const unique = [];
+      ranked.forEach(row => {
+        const marker = (row.p.heading || '') + '|' + chapterKey(row.p.url);
+        if (seen.has(marker)) return;
+        seen.add(marker);
+        unique.push(row);
+      });
+      const picked = unique.filter(row => row.same).slice(0, 2);
+      unique.filter(row => !row.same && row.score >= 6).slice(0, 1).forEach(row => {
+        if (picked.length < 3) picked.push(row);
+      });
+      return picked;
+    }
+
+    function relatedFor(kind, item) {
+      const selfId = item.id || item.name;
+      const chap = item.sourceUrl ? chapterKey(item.sourceUrl) : '';
+      const keys = itemKeywords(item.name);
+      const rows = [];
+      ['concept', 'method', 'model'].forEach(k => {
+        (book[KIND_META[k].section] || []).forEach((it, index) => {
+          if (k === kind && (it.id || it.name) === selfId) return;
+          const same = !!(chap && it.sourceUrl && chapterKey(it.sourceUrl) === chap);
+          const overlap = keys.filter(key => key.length >= 3 && itemKeywords(it.name).includes(key));
+          const score = (same ? 5 : 0) + overlap.length * 3;
+          if (!score) return;
+          rows.push({ kind: k, item: it, index, score });
+        });
+      });
+      rows.sort((a, b) => b.score - a.score);
+      return rows.slice(0, 4);
+    }
+
+    function syncExpanded() {
+      const open = !mq.matches || root.classList.contains('is-open');
+      root.querySelectorAll('[data-tab]').forEach(tab => {
+        const on = tab.getAttribute('aria-selected') === 'true';
+        tab.setAttribute('aria-expanded', on && open ? 'true' : 'false');
+      });
+    }
+
+    function closeSheet() {
+      root.classList.remove('is-open');
+      scrim.hidden = true;
+      document.body.classList.remove('companion-open');
+      if (mq.matches) sheet.inert = true;
+      syncExpanded();
+    }
+
+    function openSheet() {
+      if (!mq.matches) return;
+      root.classList.add('is-open');
+      scrim.hidden = false;
+      sheet.inert = false;
+      document.body.classList.add('companion-open');
+      syncExpanded();
+    }
+
+    function applyTab(name, openMobile) {
+      currentTab = name;
+      root.querySelectorAll('[data-tab]').forEach(tab => {
+        const on = tab.getAttribute('data-tab') === name;
+        tab.setAttribute('aria-selected', on ? 'true' : 'false');
+        tab.tabIndex = on ? 0 : -1;
+      });
+      root.querySelectorAll('[data-panel]').forEach(panel => {
+        panel.hidden = panel.getAttribute('data-panel') !== name;
+      });
+      if (name === 'read') {
+        const dot = root.querySelector('[data-tab-dot="read"]');
+        if (dot) dot.hidden = true;
+      }
+      if (openMobile && mq.matches) openSheet();
+      syncExpanded();
+    }
+
+    function selectTab(name) {
+      if (mq.matches && name === currentTab && root.classList.contains('is-open')) {
+        closeSheet();
+        return;
+      }
+      applyTab(name, true);
+    }
+
+    function paintCurrent() {
+      document.querySelectorAll('.concept-tile.is-current').forEach(el => {
+        el.classList.remove('is-current');
+        el.removeAttribute('aria-current');
+      });
+      root.querySelectorAll('.map-row.is-current').forEach(el => el.classList.remove('is-current'));
+      root.querySelectorAll('.map-hit[aria-current]').forEach(el => el.removeAttribute('aria-current'));
+      if (!selection) return;
+      document.querySelectorAll('.concept-tile').forEach(tile => {
+        if (tile.getAttribute('data-open-item') === selection.id && tile.getAttribute('data-item-kind') === selection.kind) {
+          tile.classList.add('is-current');
+          tile.setAttribute('aria-current', 'true');
+        }
+      });
+      const row = root.querySelector('.map-row[data-item-kind="' + selection.kind + '"][data-map-id="' + CSS.escape(selection.id) + '"]');
+      if (!row) return;
+      row.classList.add('is-current');
+      const hit = row.querySelector('.map-hit');
+      if (hit) hit.setAttribute('aria-current', 'true');
+      const panel = row.closest('[role="tabpanel"]');
+      if (panel && !panel.hidden) scrollPanelTo(row);
+    }
+
+    function paintTileCount(kind, id) {
+      const count = loadLocalNotes(itemKey(book.id, kind, id)).length;
+      document.querySelectorAll('.concept-tile').forEach(tile => {
+        if (tile.getAttribute('data-open-item') !== id || tile.getAttribute('data-item-kind') !== kind) return;
+        let badge = tile.querySelector('.concept-tile-count');
+        if (!count) {
+          if (badge) badge.remove();
+          return;
+        }
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.className = 'concept-tile-count';
+          tile.appendChild(badge);
+        }
+        badge.textContent = String(count);
+      });
+    }
+
+    function paintMapCount(kind, id) {
+      const row = root.querySelector('.map-row[data-item-kind="' + kind + '"][data-map-id="' + CSS.escape(id) + '"]');
+      if (!row) return;
+      const count = loadLocalNotes(itemKey(book.id, kind, id)).length;
+      const nameRow = row.querySelector('.map-name-row');
+      if (!nameRow) return;
+      let badge = nameRow.querySelector('.map-count');
+      if (!count) {
+        if (badge) badge.remove();
+        return;
+      }
+      if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'map-count';
+        nameRow.appendChild(badge);
+      }
+      badge.textContent = String(count);
+    }
+
+    function refreshOpenThread(kind, id) {
+      const meta = KIND_META[kind];
+      if (!meta) return;
+      if ((location.hash || '') !== '#' + meta.hashPrefix + encodeURIComponent(id)) return;
+      const thread = document.querySelector('[data-concept-panel-host] [data-panel-thread]');
+      if (!thread) return;
+      const notes = loadLocalNotes(itemKey(book.id, kind, id));
+      thread.innerHTML = renderNoteList(notes, kind);
+      const countEl = document.querySelector('[data-concept-panel-host] .panel-muted');
+      if (countEl) countEl.textContent = notes.length ? notes.length + ' 条' : '';
+    }
+
+    function renderMap() {
+      const panel = root.querySelector('[data-panel="map"]');
+      const groups = [
+        ['concept', '概念', book.concepts || []],
+        ['method', '方法', book.methods || []],
+        ['model', '模型', book.models || []]
+      ].filter(group => group[2].length);
+      if (!groups.length) {
+        panel.innerHTML = '<p class="companion-lead">这本书还没有抽出概念、方法或模型。</p>';
+        return;
+      }
+      panel.innerHTML = `
+        <p class="companion-lead">按概念、方法、模型来定方位。</p>
+        <p class="companion-lead">点名字打开卡片。这不是目录。</p>
+        ${groups.map(([kind, label, items]) => `
+          <section class="map-group">
+            <h3>${label} <span class="count-pill">${items.length}</span></h3>
+            ${items.map((item, index) => {
+              const id = item.id || item.name;
+              const num = String(index + 1).padStart(2, '0');
+              const count = loadLocalNotes(itemKey(book.id, kind, id)).length;
+              const gloss = glossOf(item.blurb);
+              const src = item.sourceUrl || '';
+              return `
+                <div class="map-row" data-map-id="${escapeHtml(id)}" data-item-kind="${kind}">
+                  <button type="button" class="map-hit" data-map-open="${escapeHtml(id)}" data-item-kind="${kind}">
+                    <span class="map-index" aria-hidden="true">${num}</span>
+                    <span class="map-copy">
+                      <span class="map-name-row">
+                        <span class="map-name">${escapeHtml(item.name)}</span>
+                        ${count ? `<span class="map-count">${count}</span>` : ''}
+                      </span>
+                      ${gloss ? `<span class="map-gloss">${escapeHtml(gloss)}</span>` : ''}
+                    </span>
+                  </button>
+                  ${src ? `<a class="context-link map-context" href="${escapeHtml(src)}" target="_blank" rel="noopener">看上下文</a>` : ''}
+                </div>`;
+            }).join('')}
+          </section>`).join('')}`;
+      paintCurrent();
+    }
+
+    function relatedBlock(title, id, rows) {
+      if (!rows.length) return '';
+      const list = `<div class="related-list">${rows.map(row => `
+            <button type="button" class="related-hit" data-related-open="${escapeHtml(row.item.id || row.item.name)}" data-item-kind="${row.kind}">
+              <span class="related-index">${String(row.index + 1).padStart(2, '0')}</span>
+              <span class="related-name">${escapeHtml(row.item.name)}</span>
+            </button>`).join('')}</div>`;
+      return `<section class="companion-section" id="${id}"><h3>${title}</h3>${list}</section>`;
+    }
+
+    function cardsForPassage(passage) {
+      const chap = chapterKey(passage.url);
+      const hay = (passage.heading || '') + '\n' + (passage.text || '');
+      const rows = [];
+      ['concept', 'method', 'model'].forEach(kind => {
+        (book[KIND_META[kind].section] || []).forEach((item, index) => {
+          const same = !!(item.sourceUrl && chap && chapterKey(item.sourceUrl) === chap);
+          const keys = itemKeywords(item.name).filter(key => key.length >= 3);
+          const named = keys.some(key => hay.includes(key));
+          const score = (same ? 5 : 0) + (named ? 3 : 0);
+          if (score < 3) return;
+          rows.push({ kind, item, index, score });
+        });
+      });
+      rows.sort((a, b) => b.score - a.score);
+      return rows.slice(0, 4);
+    }
+
+    function shortHead(heading) {
+      const text = String(heading || '').replace(/\s+/g, ' ').trim();
+      return text.length > 42 ? text.slice(0, 42) + '…' : text;
+    }
+
+    function renderPassageCompanion() {
+      const panel = root.querySelector('[data-panel="read"]');
+      const current = focusPassage;
+      const chap = chapterKey(current.url);
+      const chapter = passages.filter(p => p.bookId === book.id && chapterKey(p.url) === chap);
+      const headings = [];
+      const seenHead = new Set();
+      chapter.forEach(p => {
+        const head = p.heading || '';
+        if (!head || seenHead.has(head)) return;
+        seenHead.add(head);
+        headings.push(p);
+      });
+      const allHeads = headings.length > 1 ? headings : [];
+      let outline = allHeads;
+      let omitted = 0;
+      if (allHeads.length > 10) {
+        const at = allHeads.findIndex(p => passageStableId(p) === passageStableId(current));
+        const start = Math.max(0, (at < 0 ? 0 : at) - 2);
+        outline = allHeads.slice(start, start + 8);
+        omitted = allHeads.length - outline.length;
+      }
+      const selfId = passageStableId(current);
+      const nearby = passages.filter(p => p.url === current.url && passageStableId(p) !== selfId).slice(0, 2);
+      const related = cardsForPassage(current);
+      const outlineHtml = outline.length
+        ? `<ol class="outline-list">${outline.map(p => {
+            const on = passageStableId(p) === selfId;
+            const num = String(allHeads.indexOf(p) + 1).padStart(2, '0');
+            return `<li><a class="outline-hit${on ? ' is-current' : ''}" href="${escapeHtml(passageHref(p))}"><span>${num}</span>${escapeHtml(shortHead(p.heading))}</a></li>`;
+          }).join('')}</ol>${omitted ? `<p class="companion-lead">这一章还有 ${omitted} 个小标题，没有全部展开。</p>` : ''}`
+        : '<p class="companion-lead">这一节的公开短摘里，没有再分出小标题。</p>';
+      const nearbyHtml = nearby.length
+        ? nearby.map(p => `
+            <article class="passage-card">
+              <p>${escapeHtml(excerptAround(p.text, '', 110))}</p>
+              <a class="context-link" href="${escapeHtml(passageHref(p))}">同节另一段</a>
+            </article>`).join('')
+        : '';
+      const relatedHtml = related.length
+        ? relatedBlock('对上的卡片', 'passage-cards', related)
+        : '<p class="companion-lead" id="passage-cards">同书的卡片里，没有和这段对上的。</p>';
+      panel.innerHTML = `
+        <p class="companion-kicker">这段原文</p>
+        <h3 class="companion-title">${escapeHtml(shortHead(current.heading || '原文'))}</h3>
+        <section class="companion-section">
+          <div class="panel-section-label-row">
+            <span class="panel-section-label">本节摘录</span>
+            ${current.url ? `<a class="context-link" href="${escapeHtml(current.url)}" target="_blank" rel="noopener">看上下文</a>` : ''}
+          </div>
+          <blockquote class="panel-excerpt">${escapeHtml(clipPlain(current.text, 140) || '（这段没有可用的短摘）')}</blockquote>
+        </section>
+        <div class="quick-actions">
+          <button type="button" class="quick-action" data-qa="outline">章节脉络</button>
+          ${current.url
+            ? `<a class="quick-action" href="${escapeHtml(current.url)}" target="_blank" rel="noopener">看原文上下文</a>`
+            : '<button type="button" class="quick-action" disabled>看原文上下文</button>'}
+          <button type="button" class="quick-action" data-qa="cards" ${related.length ? '' : 'disabled'}>相关卡片</button>
+        </div>
+        <section class="companion-section" id="passage-outline">
+          <h3>章节脉络</h3>
+          <p class="companion-lead">小标题来自原文，不是另写的提纲。</p>
+          ${outlineHtml}
+        </section>
+        ${nearbyHtml ? `<section class="companion-section"><h3>同节的其他短摘</h3>${nearbyHtml}</section>` : ''}
+        ${relatedHtml}`;
+    }
+
+    function renderRead() {
+      const panel = root.querySelector('[data-panel="read"]');
+      if (focusPassage) {
+        renderPassageCompanion();
+        return;
+      }
+      if (!selection) {
+        panel.innerHTML = '<p class="companion-lead">打开一张卡片之后，这里放上它的意思、同书相关的卡片，以及能对上的原文。</p>';
+        return;
+      }
+      const found = findItem(selection.kind, selection.id);
+      if (!found) {
+        panel.innerHTML = '<p class="companion-lead">这张卡片不在当前书里。</p>';
+        return;
+      }
+      const item = found.item;
+      const meta = KIND_META[selection.kind] || KIND_META.concept;
+      const num = String(found.index + 1).padStart(2, '0');
+      const src = item.sourceUrl || '';
+      const related = relatedFor(selection.kind, item);
+      const concepts = related.filter(row => row.kind === 'concept');
+      const methods = related.filter(row => row.kind === 'method');
+      const models = related.filter(row => row.kind === 'model');
+      let passagesHtml = '';
+      if (!passagesReady) {
+        passagesHtml = '<p class="companion-lead">正在对照这本书的原文短摘。</p>';
+      } else {
+        const hits = passagesFor(item);
+        passagesHtml = hits.length
+          ? hits.map(row => {
+              const text = excerptAround(row.p.text || row.p.snippet, row.matched, 120);
+              return `
+                <article class="passage-card">
+                  <p class="passage-heading">${escapeHtml(row.p.heading || '原文')}</p>
+                  <p>${escapeHtml(text)}</p>
+                  ${row.p.url ? `<a class="context-link" href="${escapeHtml(row.p.url)}" target="_blank" rel="noopener">看上下文</a>` : ''}
+                </article>`;
+            }).join('')
+          : '<p class="companion-lead">原文短摘里没有对上这张卡片的段落。</p>';
+      }
+      panel.innerHTML = `
+        <p class="companion-kicker">${escapeHtml(meta.noun)} ${num}</p>
+        <h3 class="companion-title">${escapeHtml(item.name)}</h3>
+        <section class="companion-section">
+          <div class="panel-section-label-row">
+            <span class="panel-section-label">意思</span>
+            ${src ? `<a class="context-link" href="${escapeHtml(src)}" target="_blank" rel="noopener">看上下文</a>` : ''}
+          </div>
+          <blockquote class="panel-excerpt">${escapeHtml(asExcerpt(item.blurb) || '（这张卡片还没有整理出意思）')}</blockquote>
+        </section>
+        <div class="quick-actions">
+          <button type="button" class="quick-action" data-qa="concepts" ${concepts.length ? '' : 'disabled'}>本页相关概念</button>
+          ${src
+            ? `<a class="quick-action" href="${escapeHtml(src)}" target="_blank" rel="noopener">看原文上下文</a>`
+            : '<button type="button" class="quick-action" disabled>看原文上下文</button>'}
+          <button type="button" class="quick-action" data-qa="methods" ${methods.length ? '' : 'disabled'}>相关方法论</button>
+        </div>
+        ${[relatedBlock('相关概念', 'companion-related-concepts', concepts), relatedBlock('相关方法论', 'companion-related-methods', methods), relatedBlock('相关模型', 'companion-related-models', models)].join('') || '<p class="companion-lead">同书的卡片里，没有和这里直接对上的。</p>'}
+        <section class="companion-section" id="companion-passages">
+          <h3>原文</h3>
+          ${passagesHtml}
+        </section>`;
+    }
+
+    function bindRegister(container) {
+      const reg = container.querySelector('[data-register-form]');
+      if (reg) {
+        reg.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const fd = new FormData(reg);
+          const nickname = String(fd.get('nickname') || '').trim();
+          if (!nickname) return;
+          if (setUser({ nickname, kaijiang: !!fd.get('kaijiang') }) === false) {
+            const warn = root.querySelector('[data-storage-note]');
+            if (warn) warn.hidden = false;
+            return;
+          }
+          document.dispatchEvent(new CustomEvent('concept-lib:user'));
+        });
+      }
+      const reset = container.querySelector('[data-reset-user]');
+      if (reset) {
+        reset.addEventListener('click', () => {
+          localStorage.removeItem(USER_KEY);
+          document.dispatchEvent(new CustomEvent('concept-lib:user'));
+        });
+      }
+    }
+
+    function bindInterpretForm(form, opts) {
+      const types = opts.types || practiceTypesFor(opts.kind);
+      const byId = Object.fromEntries(types.map(t => [t.id, t]));
+      const typeInput = form.querySelector('[data-practice-type]');
+      const promptEl = form.querySelector('[data-practice-prompt]');
+      const bodyEl = form.querySelector('[data-practice-body]');
+      form.querySelectorAll('[data-practice-chip]').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const tid = chip.getAttribute('data-practice-chip');
+          const pmeta = byId[tid] || practiceMeta(tid, opts.kind);
+          form.querySelectorAll('[data-practice-chip]').forEach(other => {
+            const on = other === chip;
+            other.classList.toggle('is-active', on);
+            other.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
+          if (typeInput) typeInput.value = pmeta.id;
+          if (promptEl) promptEl.textContent = pmeta.label;
+          if (bodyEl) bodyEl.setAttribute('placeholder', pmeta.placeholder);
+        });
+      });
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const user = getUser();
+        if (!user) return;
+        const fd = new FormData(form);
+        const body = String(fd.get('body') || '').trim();
+        if (!body) return;
+        const round = user.kaijiang ? String(fd.get('round') || '').trim() : '';
+        if (user.kaijiang && !round) {
+          alert('请选择这是第几轮');
+          return;
+        }
+        const practiceType = String(fd.get('practiceType') || types[0].id);
+        const saved = saveLocalNote(opts.key, {
+          name: user.nickname,
+          body,
+          practiceType,
+          kaijiang: !!user.kaijiang,
+          round,
+          at: nowIso()
+        });
+        if (saved === false) {
+          const warn = root.querySelector('[data-storage-note]');
+          if (warn) warn.hidden = false;
+          return;
+        }
+        form.reset();
+        const kept = byId[practiceType] || practiceMeta(practiceType, opts.kind);
+        if (typeInput) typeInput.value = kept.id;
+        if (promptEl) promptEl.textContent = kept.label;
+        if (bodyEl) bodyEl.setAttribute('placeholder', kept.placeholder);
+        form.querySelectorAll('[data-practice-chip]').forEach(chip => {
+          const on = chip.getAttribute('data-practice-chip') === kept.id;
+          chip.classList.toggle('is-active', on);
+          chip.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+        document.dispatchEvent(new CustomEvent('concept-lib:notes', {
+          detail: { key: opts.key, kind: opts.kind, id: opts.id || '' }
+        }));
+      });
+    }
+
+    function paintBookNotes() {
+      const el = root.querySelector('[data-book-notes]');
+      if (!el) return;
+      const notes = loadLocalNotes(recapKey());
+      el.innerHTML = notes.length ? notes.map(note => renderNoteCard(note, 'concept')).join('') : '';
+    }
+
+    function paintCardNotes() {
+      const el = root.querySelector('[data-card-notes]');
+      if (!el || !selection) return;
+      const notes = loadLocalNotes(itemKey(book.id, selection.kind, selection.id));
+      el.innerHTML = notes.length ? notes.map(note => renderNoteCard(note, selection.kind)).join('') : '';
+    }
+
+    function paintRecapCard() {
+      const host = root.querySelector('[data-recap-card]');
+      if (!host) return;
+      if (!selection) {
+        host.innerHTML = `
+          <p class="companion-kicker">当前卡片</p>
+          <p class="companion-lead">打开一张卡片后，可以在这里写理解、好奇、与我相关和践行。和卡片里是同一份记录。</p>`;
+        return;
+      }
+      const found = findItem(selection.kind, selection.id);
+      if (!found) {
+        host.innerHTML = '';
+        return;
+      }
+      const user = getUser();
+      const noun = (KIND_META[selection.kind] || KIND_META.concept).noun;
+      host.innerHTML = `
+        <p class="companion-kicker">当前卡片 · ${escapeHtml(noun)}</p>
+        <h3 class="companion-title">${escapeHtml(found.item.name)}</h3>
+        <p class="companion-lead">理解、好奇、与我相关、践行。和这张卡片里是同一份记录。</p>
+        ${user ? '' : '<p class="companion-lead">先在上面登记昵称，再写到这张卡片上。</p>'}
+        <div data-recap-card-write></div>
+        <div class="recap-notes" data-card-notes></div>`;
+      if (user) {
+        const write = host.querySelector('[data-recap-card-write]');
+        write.innerHTML = renderInterpretForm(user, selection.kind, {
+          intro: false,
+          chipLabel: '这张卡片的写下方向'
+        });
+        const form = write.querySelector('[data-interpret-form]');
+        if (form) {
+          bindInterpretForm(form, {
+            kind: selection.kind,
+            key: itemKey(book.id, selection.kind, selection.id),
+            id: selection.id,
+            types: practiceTypesFor(selection.kind)
+          });
+        }
+      }
+      paintCardNotes();
+    }
+
+    function paintRecapIndex() {
+      const host = root.querySelector('[data-recap-index]');
+      if (!host) return;
+      const rows = [];
+      ['concept', 'method', 'model'].forEach(kind => {
+        (book[KIND_META[kind].section] || []).forEach((item, index) => {
+          const id = item.id || item.name;
+          const notes = loadLocalNotes(itemKey(book.id, kind, id));
+          if (notes.length) rows.push({ kind, item, index, notes });
+        });
+      });
+      if (!rows.length) {
+        host.innerHTML = `
+          <p class="companion-kicker">已经写下</p>
+          <p class="companion-lead">卡片上还没有记下的内容。</p>`;
+        return;
+      }
+      host.innerHTML = `
+        <p class="companion-kicker">已经写下</p>
+        <div class="index-list">
+          ${rows.map(row => {
+            const latest = row.notes[0];
+            const noun = KIND_META[row.kind].noun;
+            const id = row.item.id || row.item.name;
+            return `
+              <button type="button" class="index-hit" data-index-open="${escapeHtml(id)}" data-item-kind="${row.kind}">
+                <span>
+                  <span class="index-kind">${escapeHtml(noun)}</span>
+                  <span class="index-name">${escapeHtml(row.item.name)}</span>
+                  <span class="index-snippet">${escapeHtml(latest.body || '')}</span>
+                </span>
+                <span class="index-count">${row.notes.length}</span>
+              </button>`;
+          }).join('')}
+        </div>`;
+    }
+
+    function paintAuth() {
+      const auth = root.querySelector('[data-recap-auth]');
+      const write = root.querySelector('[data-recap-book-write]');
+      if (!auth || !write) return;
+      const user = getUser();
+      auth.innerHTML = renderRegisterForm(user);
+      bindRegister(auth);
+      if (!user) {
+        write.innerHTML = '';
+        return;
+      }
+      write.innerHTML = renderInterpretForm(user, 'concept', {
+        types: recapTypes(),
+        intro: false,
+        chipLabel: focusPassage ? '这段原文的理解、好奇或践行' : '这本书的理解、好奇或践行'
+      });
+      const form = write.querySelector('[data-interpret-form]');
+      if (form) {
+        bindInterpretForm(form, {
+          kind: 'concept',
+          key: recapKey(),
+          id: '',
+          types: recapTypes()
+        });
+      }
+    }
+
+    function renderRecap() {
+      const panel = root.querySelector('[data-panel="recap"]');
+      if (focusPassage) {
+        panel.innerHTML = `
+          <div class="recap-block">
+            <p class="companion-kicker">写在这段上</p>
+            <h3 class="companion-title">${escapeHtml(shortHead(focusPassage.heading || '这段原文'))}</h3>
+            <p class="companion-lead">《${escapeHtml(book.title)}》</p>
+            <p class="companion-lead">理解、好奇、践行。只留在这台设备里，换一段不会盖掉这一段。</p>
+            <p class="companion-lead" data-storage-note hidden>这台设备现在存不下笔记。</p>
+            <div data-recap-auth></div>
+            <div data-recap-book-write></div>
+            <div class="recap-notes" data-book-notes></div>
+          </div>`;
+        paintAuth();
+        paintBookNotes();
+        return;
+      }
+      panel.innerHTML = `
+        <div class="recap-block">
+          <p class="companion-kicker">合上之前</p>
+          <h3 class="companion-title">留给自己的三句话</h3>
+          <p class="companion-lead">理解、好奇、践行。写在这台设备上，可以一条条追加。</p>
+          <p class="companion-lead" data-storage-note hidden>这台设备现在存不下笔记。</p>
+          <div data-recap-auth></div>
+          <div data-recap-book-write></div>
+          <div class="recap-notes" data-book-notes></div>
+        </div>
+        <div class="recap-block" data-recap-card></div>
+        <div class="recap-block" data-recap-index></div>`;
+      paintAuth();
+      paintBookNotes();
+      paintRecapCard();
+      paintRecapIndex();
+    }
+
+    function setSelection(kind, id) {
+      const found = findItem(kind, id);
+      selection = found ? { kind, id, index: found.index } : { kind, id, index: -1 };
+      paintCurrent();
+      renderRead();
+      paintRecapCard();
+      if (currentTab !== 'read') {
+        const dot = root.querySelector('[data-tab-dot="read"]');
+        if (dot) dot.hidden = false;
+      }
+    }
+
+    renderMap();
+    renderRead();
+    renderRecap();
+    if (focusPassage) applyTab('read', false);
+    if (mq.matches) sheet.inert = !root.classList.contains('is-open');
+    syncExpanded();
+
+    root.querySelector('[data-companion-close]').addEventListener('click', closeSheet);
+    scrim.addEventListener('click', closeSheet);
+    root.querySelectorAll('[data-tab]').forEach(tab => {
+      tab.addEventListener('click', () => selectTab(tab.getAttribute('data-tab')));
+    });
+    root.querySelector('[role="tablist"]').addEventListener('keydown', (e) => {
+      const names = ['map', 'read', 'recap'];
+      const index = names.indexOf(currentTab);
+      let next = -1;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (index + 1) % names.length;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (index + names.length - 1) % names.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = names.length - 1;
+      else return;
+      e.preventDefault();
+      selectTab(names[next]);
+      const button = root.querySelector('[data-tab="' + names[next] + '"]');
+      if (button) button.focus();
+    });
+    root.addEventListener('click', (e) => {
+      const opener = e.target.closest('[data-map-open], [data-related-open]');
+      if (opener && root.contains(opener)) {
+        const kind = opener.getAttribute('data-item-kind');
+        const id = opener.getAttribute('data-map-open') || opener.getAttribute('data-related-open');
+        const found = findItem(kind, id);
+        if (found) openItemPanel(book, kind, found.item, found.index);
+        return;
+      }
+      const indexHit = e.target.closest('[data-index-open]');
+      if (indexHit && root.contains(indexHit)) {
+        setSelection(indexHit.getAttribute('data-item-kind'), indexHit.getAttribute('data-index-open'));
+        scrollPanelTo(root.querySelector('[data-recap-card]'));
+        return;
+      }
+      const action = e.target.closest('[data-qa]');
+      if (action && root.contains(action)) {
+        const which = action.getAttribute('data-qa');
+        const target = which === 'methods'
+          ? root.querySelector('#companion-related-methods')
+          : which === 'outline'
+            ? root.querySelector('#passage-outline')
+            : which === 'cards'
+              ? root.querySelector('#passage-cards')
+              : root.querySelector('#companion-related-concepts');
+        scrollPanelTo(target);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (document.querySelector('.concept-sheet.is-open')) return;
+      if (mq.matches && root.classList.contains('is-open')) {
+        e.preventDefault();
+        closeSheet();
+      }
+    }, true);
+
+    mq.addEventListener('change', () => {
+      if (!mq.matches) {
+        scrim.hidden = true;
+        sheet.inert = false;
+        root.classList.remove('is-open');
+        document.body.classList.remove('companion-open');
+      } else if (!root.classList.contains('is-open')) {
+        sheet.inert = true;
+      }
+      syncExpanded();
+    });
+
+    document.addEventListener('concept-lib:select', (e) => {
+      const detail = e.detail || {};
+      if (detail.bookId && detail.bookId !== book.id) return;
+      if (!detail.kind || !detail.id) return;
+      setSelection(detail.kind, detail.id);
+    });
+    document.addEventListener('concept-lib:user', () => {
+      paintAuth();
+      paintBookNotes();
+      paintRecapCard();
+    });
+    document.addEventListener('concept-lib:notes', (e) => {
+      const detail = e.detail || {};
+      if (detail.key === bookRecapKey || detail.key === recapKey()) paintBookNotes();
+      if (detail.kind && detail.id) {
+        paintTileCount(detail.kind, detail.id);
+        paintMapCount(detail.kind, detail.id);
+        refreshOpenThread(detail.kind, detail.id);
+        if (selection && selection.kind === detail.kind && selection.id === detail.id) paintCardNotes();
+      }
+      paintRecapIndex();
+    });
+
+    return {
+      setPassages(list) {
+        passages = list || [];
+        passagesReady = true;
+        if (selection) renderRead();
+      }
+    };
+  }
+
   async function boot() {
     setupTheme();
     setupNav();
@@ -1026,21 +2017,70 @@
       const mount = document.querySelector('[data-results]');
       const meta = document.querySelector('[data-results-meta]');
       const hint = document.querySelector('[data-hint]');
+      const modeButtons = Array.from(document.querySelectorAll('[data-search-mode]'));
+      const lead = document.querySelector('.hint-lead');
+      const examples = document.querySelector('.hint-examples');
+      let mode = qs('mode') === 'curiosity' ? 'curiosity' : 'card';
       const passages = await loadPassages();
+
+      function paintMode() {
+        modeButtons.forEach(button => {
+          const on = button.getAttribute('data-search-mode') === mode;
+          button.setAttribute('aria-checked', on ? 'true' : 'false');
+          button.tabIndex = on ? 0 : -1;
+        });
+        if (lead && examples) {
+          if (mode === 'curiosity') {
+            lead.textContent = '搜一个好奇点，';
+            examples.textContent = '例如：时间、财富';
+          } else {
+            lead.textContent = '搜索概念、方法论，';
+            examples.textContent = '例如：财富、时间、定投';
+          }
+        }
+      }
+
+      function remember(q) {
+        const url = new URL(location.href);
+        const text = (q || '').trim();
+        if (text) url.searchParams.set('q', text);
+        else url.searchParams.delete('q');
+        url.searchParams.set('mode', mode);
+        history.replaceState(null, '', url.pathname + url.search);
+      }
 
       function run() {
         const q = input.value;
-        const hits = searchLibrary(books, passages, q);
-        renderResults(hits, q, mount, meta);
+        if (mode === 'curiosity') renderCuriosity(searchCuriosity(passages, q), q, mount, meta);
+        else renderResults(searchLibrary(books, [], q), q, mount, meta);
         if (hint) hint.hidden = !!q.trim();
+        remember(q);
       }
 
+      paintMode();
       btn.addEventListener('click', run);
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
           run();
         }
+      });
+      modeButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+          mode = button.getAttribute('data-search-mode') === 'curiosity' ? 'curiosity' : 'card';
+          paintMode();
+          if (input.value.trim()) run();
+          else remember('');
+        });
+        button.addEventListener('keydown', (e) => {
+          const forward = e.key === 'ArrowRight' || e.key === 'ArrowDown';
+          const back = e.key === 'ArrowLeft' || e.key === 'ArrowUp';
+          if (!forward && !back) return;
+          e.preventDefault();
+          const next = modeButtons[(index + (forward ? 1 : -1) + modeButtons.length) % modeButtons.length];
+          next.focus();
+          next.click();
+        });
       });
       const preset = qs('q');
       if (preset) {
@@ -1069,7 +2109,40 @@
         return;
       }
       document.title = book.title + ' · 概念书库';
+      const passageKey = qs('p');
+      if (passageKey) {
+        const passages = await loadPassages();
+        const passage = findPassage(passages, book.id, passageKey);
+        if (!passage) {
+          mount.innerHTML = `
+            <div class="section">
+              <h2>没有找到这段原文</h2>
+              <p class="placeholder-note">链接可能旧了。可以回<a href="index.html?mode=curiosity">好奇搜索</a>，或看<a href="book.html?id=${encodeURIComponent(book.id)}">这本书的概念</a>。</p>
+            </div>`;
+          mountCompanion(book, { passages });
+          return;
+        }
+        const source = passage.url || primarySource(book);
+        const byline = bookByline(book);
+        mount.innerHTML = `
+          <article class="passage-read">
+            <p class="passage-kicker">原文短摘</p>
+            <h1>${escapeHtml(passage.heading || '原文')}</h1>
+            <p class="meta-line"><a href="book.html?id=${encodeURIComponent(book.id)}">${escapeHtml(book.title)}</a>${byline ? ' · ' + escapeHtml(byline) : ''}</p>
+            <blockquote class="passage-body">${escapeHtml(clipPlain(passage.text, 480) || '（这段没有可用的短摘）')}</blockquote>
+            <p class="passage-note">这是公开短摘，不是这一章的全文。</p>
+            <div class="book-actions">
+              <a class="btn btn-ghost" href="${escapeHtml(source)}" target="_blank" rel="noopener">看上下文</a>
+              <a class="btn btn-ghost" href="book.html?id=${encodeURIComponent(book.id)}">这本书的概念</a>
+            </div>
+          </article>`;
+        document.title = (passage.heading || '原文') + ' · ' + book.title + ' · 概念书库';
+        mountCompanion(book, { passage, passages });
+        return;
+      }
       renderBookDetail(book, mount);
+      const companion = mountCompanion(book);
+      loadPassages().then(list => companion.setPassages(list));
     }
   }
 
